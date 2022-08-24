@@ -36,9 +36,16 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/script.hpp>
-#include <godot_cpp/classes/script_instance_extension.hpp>
+
+#include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/templates/list.hpp>
+#include <godot_cpp/templates/rb_set.hpp>
+#include <godot_cpp/templates/rb_set.hpp>
+#include <godot_cpp/templates/vector.hpp>
 
 using namespace godot;
+
+#define RES_BASE_EXTENSION(ext)
 
 #else
 #include "core/debugger/engine_debugger.h"
@@ -75,7 +82,7 @@ protected:
 public:
 	Ref<VisualScript> get_visual_script() const;
 
-	virtual int get_output_sequence_port_count() const {}
+	virtual int get_output_sequence_port_count() const { return 0; }
 	virtual bool has_input_sequence_port() const { return false; }
 
 	virtual String get_output_sequence_port_text(int p_port) const { return ""; }
