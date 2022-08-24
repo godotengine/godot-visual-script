@@ -36,6 +36,7 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/script_language_extension.hpp>
 
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/list.hpp>
@@ -46,6 +47,14 @@
 using namespace godot;
 
 #define RES_BASE_EXTENSION(ext)
+
+// TODO This will need more work than just this.
+#define ScriptLanguage ScriptLanguageExtension
+
+// TODO ScriptInstance (via C struct: GDNativeExtensionScriptInstanceInfo, see gdnative_interface.h).
+class ScriptInstance {
+
+};
 
 #else
 #include "core/debugger/engine_debugger.h"
@@ -172,6 +181,7 @@ public:
 
 	virtual int get_working_memory_size() const { return 0; }
 
+	// TODO What to do with Callable::CallError ? Add to godot-cpp? Does it make sense? Is it exposed to extensions?
 	virtual int step(const Variant **p_inputs, Variant **p_outputs, StartMode p_start_mode, Variant *p_working_mem, Callable::CallError &r_error, String &r_error_str) = 0; // Do a step, return which sequence port to go out.
 
 	Ref<VisualScriptNode> get_base_node() { return Ref<VisualScriptNode>(base); }
