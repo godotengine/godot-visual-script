@@ -31,7 +31,16 @@
 #ifndef VISUAL_SCRIPT_REGISTER_TYPES_H
 #define VISUAL_SCRIPT_REGISTER_TYPES_H
 
+#ifdef GDEXTENSION
+#include <godot/gdnative_interface.h>
+#include <godot_cpp/godot.hpp>
+#define ModuleInitializationLevel GDNativeInitializationLevel
+using namespace godot;
+
+#else
 #include "modules/register_module_types.h"
+
+#endif
 
 void initialize_visual_script_module(ModuleInitializationLevel p_level);
 void uninitialize_visual_script_module(ModuleInitializationLevel p_level);
