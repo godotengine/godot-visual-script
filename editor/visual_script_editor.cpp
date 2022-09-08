@@ -1478,7 +1478,7 @@ void VisualScriptEditor::_add_func_input() {
 
 	Button *delete_button = memnew(Button);
 	delete_button->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")));
-	delete_button->set_tooltip(vformat(TTR("Delete input port")));
+	delete_button->set_tooltip_text(vformat(TTR("Delete input port")));
 	hbox->add_child(delete_button);
 
 	for (int i = 0; i < func_input_vbox->get_child_count(); i++) {
@@ -2933,7 +2933,7 @@ Control *VisualScriptEditor::get_edit_menu() {
 }
 
 void VisualScriptEditor::_change_base_type() {
-	select_base_type->popup_create(true, true, script->get_instance_base_type());
+	select_base_type->popup_create(true, true, script->get_instance_base_type(), script->get_path().get_file());
 }
 
 void VisualScriptEditor::_toggle_tool_script() {
@@ -4584,7 +4584,7 @@ void VisualScriptEditor::update_toggle_scripts_button() {
 	} else {
 		toggle_scripts_button->set_icon(Control::get_theme_icon(ScriptEditor::get_singleton()->is_scripts_panel_toggled() ? SNAME("Back") : SNAME("Forward"), SNAME("EditorIcons")));
 	}
-	toggle_scripts_button->set_tooltip(vformat("%s (%s)", TTR("Toggle Scripts Panel"), ED_GET_SHORTCUT("script_editor/toggle_scripts_panel")->get_as_text()));
+	toggle_scripts_button->set_tooltip_text(vformat("%s (%s)", TTR("Toggle Scripts Panel"), ED_GET_SHORTCUT("script_editor/toggle_scripts_panel")->get_as_text()));
 }
 
 void VisualScriptEditor::_bind_methods() {
@@ -4919,10 +4919,10 @@ static void register_editor_callback() {
 	ScriptEditor::register_create_script_editor_function(create_editor);
 
 	ED_SHORTCUT("visual_script_editor/toggle_breakpoint", TTR("Toggle Breakpoint"), Key::F9);
-	ED_SHORTCUT("visual_script_editor/find_node_type", TTR("Find Node Type"), KeyModifierMask::CMD + Key::F);
-	ED_SHORTCUT("visual_script_editor/create_function", TTR("Make Function"), KeyModifierMask::CMD + Key::G);
-	ED_SHORTCUT("visual_script_editor/refresh_nodes", TTR("Refresh Graph"), KeyModifierMask::CMD + Key::R);
-	ED_SHORTCUT("visual_script_editor/edit_member", TTR("Edit Member"), KeyModifierMask::CMD + Key::E);
+	ED_SHORTCUT("visual_script_editor/find_node_type", TTR("Find Node Type"), KeyModifierMask::CMD_OR_CTRL + Key::F);
+	ED_SHORTCUT("visual_script_editor/create_function", TTR("Make Function"), KeyModifierMask::CMD_OR_CTRL + Key::G);
+	ED_SHORTCUT("visual_script_editor/refresh_nodes", TTR("Refresh Graph"), KeyModifierMask::CMD_OR_CTRL + Key::R);
+	ED_SHORTCUT("visual_script_editor/edit_member", TTR("Edit Member"), KeyModifierMask::CMD_OR_CTRL + Key::E);
 }
 
 void VisualScriptEditor::register_editor() {

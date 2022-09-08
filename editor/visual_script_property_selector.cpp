@@ -392,7 +392,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	case_sensitive_button = memnew(Button);
 	case_sensitive_button->set_flat(true);
-	case_sensitive_button->set_tooltip(TTR("Case Sensitive"));
+	case_sensitive_button->set_tooltip_text(TTR("Case Sensitive"));
 	case_sensitive_button->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	case_sensitive_button->set_toggle_mode(true);
 	case_sensitive_button->set_focus_mode(Control::FOCUS_NONE);
@@ -400,7 +400,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	hierarchy_button = memnew(Button);
 	hierarchy_button->set_flat(true);
-	hierarchy_button->set_tooltip(TTR("Show Hierarchy"));
+	hierarchy_button->set_tooltip_text(TTR("Show Hierarchy"));
 	hierarchy_button->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	hierarchy_button->set_toggle_mode(true);
 	hierarchy_button->set_pressed(true);
@@ -411,7 +411,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_visual_script_nodes = memnew(Button);
 	search_visual_script_nodes->set_flat(true);
-	search_visual_script_nodes->set_tooltip(TTR("Search Visual Script Nodes"));
+	search_visual_script_nodes->set_tooltip_text(TTR("Search Visual Script Nodes"));
 	search_visual_script_nodes->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_visual_script_nodes->set_toggle_mode(true);
 	search_visual_script_nodes->set_pressed(true);
@@ -420,7 +420,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_classes = memnew(Button);
 	search_classes->set_flat(true);
-	search_classes->set_tooltip(TTR("Search Classes"));
+	search_classes->set_tooltip_text(TTR("Search Classes"));
 	search_classes->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results_search_all));
 	search_classes->set_toggle_mode(true);
 	search_classes->set_pressed(true);
@@ -429,7 +429,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_operators = memnew(Button);
 	search_operators->set_flat(true);
-	search_operators->set_tooltip(TTR("Search Operators"));
+	search_operators->set_tooltip_text(TTR("Search Operators"));
 	search_operators->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_operators->set_toggle_mode(true);
 	search_operators->set_pressed(true);
@@ -440,7 +440,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_methods = memnew(Button);
 	search_methods->set_flat(true);
-	search_methods->set_tooltip(TTR("Search Methods"));
+	search_methods->set_tooltip_text(TTR("Search Methods"));
 	search_methods->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_methods->set_toggle_mode(true);
 	search_methods->set_pressed(true);
@@ -449,7 +449,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_signals = memnew(Button);
 	search_signals->set_flat(true);
-	search_signals->set_tooltip(TTR("Search Signals"));
+	search_signals->set_tooltip_text(TTR("Search Signals"));
 	search_signals->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_signals->set_toggle_mode(true);
 	search_signals->set_pressed(true);
@@ -458,7 +458,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_constants = memnew(Button);
 	search_constants->set_flat(true);
-	search_constants->set_tooltip(TTR("Search Constants"));
+	search_constants->set_tooltip_text(TTR("Search Constants"));
 	search_constants->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_constants->set_toggle_mode(true);
 	search_constants->set_pressed(true);
@@ -467,7 +467,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_properties = memnew(Button);
 	search_properties->set_flat(true);
-	search_properties->set_tooltip(TTR("Search Properties"));
+	search_properties->set_tooltip_text(TTR("Search Properties"));
 	search_properties->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_properties->set_toggle_mode(true);
 	search_properties->set_pressed(true);
@@ -476,7 +476,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	search_theme_items = memnew(Button);
 	search_theme_items->set_flat(true);
-	search_theme_items->set_tooltip(TTR("Search Theme Items"));
+	search_theme_items->set_tooltip_text(TTR("Search Theme Items"));
 	search_theme_items->connect("pressed", callable_mp(this, &VisualScriptPropertySelector::_update_results));
 	search_theme_items->set_toggle_mode(true);
 	search_theme_items->set_pressed(true);
@@ -485,7 +485,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 
 	scope_combo = memnew(OptionButton);
 	scope_combo->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
-	scope_combo->set_tooltip(TTR("Select the search limits"));
+	scope_combo->set_tooltip_text(TTR("Select the search limits"));
 	scope_combo->set_stretch_ratio(0); // Fixed width.
 	scope_combo->add_item(TTR("Search Related"), SCOPE_RELATED);
 	scope_combo->add_separator();
@@ -497,7 +497,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 	hbox->add_child(scope_combo);
 
 	search_box = memnew(LineEdit);
-	search_box->set_tooltip(TTR("Enter \" \" to show all filtered options\nEnter \".\" to show all filtered methods, operators and constructors\nUse CTRL_KEY to drop property setters"));
+	search_box->set_tooltip_text(TTR("Enter \" \" to show all filtered options\nEnter \".\" to show all filtered methods, operators and constructors\nUse CTRL_KEY to drop property setters"));
 	search_box->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
 	search_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	search_box->connect("text_changed", callable_mp(this, &VisualScriptPropertySelector::_update_results_s));
@@ -1167,8 +1167,8 @@ TreeItem *VisualScriptPropertySelector::SearchRunner::_create_class_item(TreeIte
 	item->set_icon(0, icon);
 	item->set_text(0, text_0);
 	item->set_text(1, TTR(text_1));
-	item->set_tooltip(0, tooltip);
-	item->set_tooltip(1, tooltip);
+	item->set_tooltip_text(0, tooltip);
+	item->set_tooltip_text(1, tooltip);
 	item->set_metadata(0, details);
 	item->set_metadata(1, what);
 	if (p_gray) {
@@ -1245,8 +1245,8 @@ TreeItem *VisualScriptPropertySelector::SearchRunner::_create_member_item(TreeIt
 	item->set_icon(0, icon);
 	item->set_text(0, text);
 	item->set_text(1, TTRGET(p_type));
-	item->set_tooltip(0, p_tooltip);
-	item->set_tooltip(1, p_tooltip);
+	item->set_tooltip_text(0, p_tooltip);
+	item->set_tooltip_text(1, p_tooltip);
 	item->set_metadata(0, p_class_name + ":" + p_name);
 	item->set_metadata(1, "class_" + p_metatype);
 	item->set_meta("description", p_description);
