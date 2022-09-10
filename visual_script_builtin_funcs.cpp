@@ -169,10 +169,10 @@ int VisualScriptBuiltinFunc::get_func_argument_count(BuiltinFunc p_func) {
 		case MATH_STEP_DECIMALS:
 		case MATH_SEED:
 		case MATH_RANDSEED:
-		case MATH_DEG2RAD:
-		case MATH_RAD2DEG:
-		case MATH_LINEAR2DB:
-		case MATH_DB2LINEAR:
+		case MATH_DEG_TO_RAD:
+		case MATH_RAD_TO_DEG:
+		case MATH_LINEAR_TO_DB:
+		case MATH_DB_TO_LINEAR:
 		case LOGIC_NEAREST_PO2:
 		case OBJ_WEAKREF:
 		case TYPE_OF:
@@ -214,7 +214,7 @@ int VisualScriptBuiltinFunc::get_func_argument_count(BuiltinFunc p_func) {
 		case LOGIC_CLAMP:
 			return 3;
 		case MATH_CUBIC_INTERPOLATE:
-		case MATH_RANGE_LERP:
+		case MATH_REMAP:
 			return 5;
 		case FUNC_MAX: {
 		}
@@ -344,7 +344,7 @@ PropertyInfo VisualScriptBuiltinFunc::get_input_value_port_info(int p_idx) const
 				return PropertyInfo(Variant::FLOAT, "weight");
 			}
 		} break;
-		case MATH_RANGE_LERP: {
+		case MATH_REMAP: {
 			if (p_idx == 0) {
 				return PropertyInfo(Variant::FLOAT, "value");
 			} else if (p_idx == 1) {
@@ -395,16 +395,16 @@ PropertyInfo VisualScriptBuiltinFunc::get_input_value_port_info(int p_idx) const
 		case MATH_RANDSEED: {
 			return PropertyInfo(Variant::INT, "seed");
 		} break;
-		case MATH_DEG2RAD: {
+		case MATH_DEG_TO_RAD: {
 			return PropertyInfo(Variant::FLOAT, "deg");
 		} break;
-		case MATH_RAD2DEG: {
+		case MATH_RAD_TO_DEG: {
 			return PropertyInfo(Variant::FLOAT, "rad");
 		} break;
-		case MATH_LINEAR2DB: {
+		case MATH_LINEAR_TO_DB: {
 			return PropertyInfo(Variant::FLOAT, "nrg");
 		} break;
-		case MATH_DB2LINEAR: {
+		case MATH_DB_TO_LINEAR: {
 			return PropertyInfo(Variant::FLOAT, "db");
 		} break;
 		case MATH_PINGPONG: {
@@ -543,7 +543,7 @@ PropertyInfo VisualScriptBuiltinFunc::get_output_value_port_info(int p_idx) cons
 		case MATH_CUBIC_INTERPOLATE:
 		case MATH_LERP_ANGLE:
 		case MATH_INVERSE_LERP:
-		case MATH_RANGE_LERP:
+		case MATH_REMAP:
 		case MATH_SMOOTHSTEP:
 		case MATH_MOVE_TOWARD:
 		case MATH_RANDOMIZE: {
@@ -568,12 +568,12 @@ PropertyInfo VisualScriptBuiltinFunc::get_output_value_port_info(int p_idx) cons
 				return PropertyInfo(Variant::INT, "seed");
 			}
 		} break;
-		case MATH_DEG2RAD:
-		case MATH_RAD2DEG:
-		case MATH_LINEAR2DB:
+		case MATH_DEG_TO_RAD:
+		case MATH_RAD_TO_DEG:
+		case MATH_LINEAR_TO_DB:
 		case MATH_WRAPF:
 		case MATH_PINGPONG:
-		case MATH_DB2LINEAR: {
+		case MATH_DB_TO_LINEAR: {
 			t = Variant::FLOAT;
 		} break;
 		case MATH_WRAP: {
@@ -831,13 +831,13 @@ void VisualScriptBuiltinFunc::exec_func(BuiltinFunc p_func, const Variant **p_in
 			VALIDATE_ARG_NUM(2);
 			*r_return = Math::inverse_lerp((double)*p_inputs[0], (double)*p_inputs[1], (double)*p_inputs[2]);
 		} break;
-		case VisualScriptBuiltinFunc::MATH_RANGE_LERP: {
+		case VisualScriptBuiltinFunc::MATH_REMAP: {
 			VALIDATE_ARG_NUM(0);
 			VALIDATE_ARG_NUM(1);
 			VALIDATE_ARG_NUM(2);
 			VALIDATE_ARG_NUM(3);
 			VALIDATE_ARG_NUM(4);
-			*r_return = Math::range_lerp((double)*p_inputs[0], (double)*p_inputs[1], (double)*p_inputs[2], (double)*p_inputs[3], (double)*p_inputs[4]);
+			*r_return = Math::remap((double)*p_inputs[0], (double)*p_inputs[1], (double)*p_inputs[2], (double)*p_inputs[3], (double)*p_inputs[4]);
 		} break;
 		case VisualScriptBuiltinFunc::MATH_SMOOTHSTEP: {
 			VALIDATE_ARG_NUM(0);
@@ -892,21 +892,21 @@ void VisualScriptBuiltinFunc::exec_func(BuiltinFunc p_func, const Variant **p_in
 			*r_return = reta;
 
 		} break;
-		case VisualScriptBuiltinFunc::MATH_DEG2RAD: {
+		case VisualScriptBuiltinFunc::MATH_DEG_TO_RAD: {
 			VALIDATE_ARG_NUM(0);
-			*r_return = Math::deg2rad((double)*p_inputs[0]);
+			*r_return = Math::deg_to_rad((double)*p_inputs[0]);
 		} break;
-		case VisualScriptBuiltinFunc::MATH_RAD2DEG: {
+		case VisualScriptBuiltinFunc::MATH_RAD_TO_DEG: {
 			VALIDATE_ARG_NUM(0);
-			*r_return = Math::rad2deg((double)*p_inputs[0]);
+			*r_return = Math::rad_to_deg((double)*p_inputs[0]);
 		} break;
-		case VisualScriptBuiltinFunc::MATH_LINEAR2DB: {
+		case VisualScriptBuiltinFunc::MATH_LINEAR_TO_DB: {
 			VALIDATE_ARG_NUM(0);
-			*r_return = Math::linear2db((double)*p_inputs[0]);
+			*r_return = Math::linear_to_db((double)*p_inputs[0]);
 		} break;
-		case VisualScriptBuiltinFunc::MATH_DB2LINEAR: {
+		case VisualScriptBuiltinFunc::MATH_DB_TO_LINEAR: {
 			VALIDATE_ARG_NUM(0);
-			*r_return = Math::db2linear((double)*p_inputs[0]);
+			*r_return = Math::db_to_linear((double)*p_inputs[0]);
 		} break;
 		case VisualScriptBuiltinFunc::MATH_PINGPONG: {
 			VALIDATE_ARG_NUM(0);
@@ -1246,7 +1246,7 @@ void VisualScriptBuiltinFunc::_bind_methods() {
 	BIND_ENUM_CONSTANT(MATH_LERP);
 	BIND_ENUM_CONSTANT(MATH_CUBIC_INTERPOLATE);
 	BIND_ENUM_CONSTANT(MATH_INVERSE_LERP);
-	BIND_ENUM_CONSTANT(MATH_RANGE_LERP);
+	BIND_ENUM_CONSTANT(MATH_REMAP);
 	BIND_ENUM_CONSTANT(MATH_MOVE_TOWARD);
 	BIND_ENUM_CONSTANT(MATH_RANDOMIZE);
 	BIND_ENUM_CONSTANT(MATH_RANDI);
@@ -1256,10 +1256,10 @@ void VisualScriptBuiltinFunc::_bind_methods() {
 	BIND_ENUM_CONSTANT(MATH_RANDFN);
 	BIND_ENUM_CONSTANT(MATH_SEED);
 	BIND_ENUM_CONSTANT(MATH_RANDSEED);
-	BIND_ENUM_CONSTANT(MATH_DEG2RAD);
-	BIND_ENUM_CONSTANT(MATH_RAD2DEG);
-	BIND_ENUM_CONSTANT(MATH_LINEAR2DB);
-	BIND_ENUM_CONSTANT(MATH_DB2LINEAR);
+	BIND_ENUM_CONSTANT(MATH_DEG_TO_RAD);
+	BIND_ENUM_CONSTANT(MATH_RAD_TO_DEG);
+	BIND_ENUM_CONSTANT(MATH_LINEAR_TO_DB);
+	BIND_ENUM_CONSTANT(MATH_DB_TO_LINEAR);
 	BIND_ENUM_CONSTANT(MATH_WRAP);
 	BIND_ENUM_CONSTANT(MATH_WRAPF);
 	BIND_ENUM_CONSTANT(MATH_PINGPONG);
@@ -1337,7 +1337,7 @@ void register_visual_script_builtin_func_node() {
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/cubic_interpolate", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_CUBIC_INTERPOLATE>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/lerp_angle", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_LERP_ANGLE>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/inverse_lerp", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_INVERSE_LERP>);
-	VisualScriptLanguage::singleton->add_register_func("functions/built_in/range_lerp", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_RANGE_LERP>);
+	VisualScriptLanguage::singleton->add_register_func("functions/built_in/range_lerp", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_REMAP>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/smoothstep", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_SMOOTHSTEP>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/move_toward", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_MOVE_TOWARD>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/randomize", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_RANDOMIZE>);
@@ -1349,10 +1349,10 @@ void register_visual_script_builtin_func_node() {
 
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/seed", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_SEED>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/randseed", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_RANDSEED>);
-	VisualScriptLanguage::singleton->add_register_func("functions/built_in/deg2rad", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_DEG2RAD>);
-	VisualScriptLanguage::singleton->add_register_func("functions/built_in/rad2deg", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_RAD2DEG>);
-	VisualScriptLanguage::singleton->add_register_func("functions/built_in/linear2db", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_LINEAR2DB>);
-	VisualScriptLanguage::singleton->add_register_func("functions/built_in/db2linear", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_DB2LINEAR>);
+	VisualScriptLanguage::singleton->add_register_func("functions/built_in/deg2rad", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_DEG_TO_RAD>);
+	VisualScriptLanguage::singleton->add_register_func("functions/built_in/rad2deg", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_RAD_TO_DEG>);
+	VisualScriptLanguage::singleton->add_register_func("functions/built_in/linear2db", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_LINEAR_TO_DB>);
+	VisualScriptLanguage::singleton->add_register_func("functions/built_in/db2linear", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_DB_TO_LINEAR>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/wrapi", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_WRAP>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/wrapf", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_WRAPF>);
 	VisualScriptLanguage::singleton->add_register_func("functions/built_in/pingpong", create_builtin_func_node<VisualScriptBuiltinFunc::MATH_PINGPONG>);

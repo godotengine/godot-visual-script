@@ -2133,7 +2133,7 @@ void VisualScriptFunctionState::connect_to_signal(Object *p_obj, const String &p
 		bind_ptrs.write[i] = &binds.write[i];
 	}
 
-	p_obj->connect(p_signal, Callable(this, "_signal_callback").bindp((const Variant **)bind_ptrs.ptr(), bind_ptrs.size()), CONNECT_ONESHOT);
+	p_obj->connect(p_signal, Callable(this, "_signal_callback").bindp((const Variant **)bind_ptrs.ptr(), bind_ptrs.size()), CONNECT_ONE_SHOT);
 }
 
 bool VisualScriptFunctionState::is_valid() const {
