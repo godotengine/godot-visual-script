@@ -33,6 +33,7 @@
 
 #include "../visual_script.h"
 #include "editor/create_dialog.h"
+#include "editor/editor_inspector.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "visual_script_property_selector.h"
 
@@ -65,10 +66,8 @@ public:
 class VisualScriptEditor : public ScriptEditorBase {
 	GDCLASS(VisualScriptEditor, ScriptEditorBase);
 
-	enum {
-		TYPE_SEQUENCE = 1000,
-		INDEX_BASE_SEQUENCE = 1024
-	};
+	enum { TYPE_SEQUENCE = 1000,
+		INDEX_BASE_SEQUENCE = 1024 };
 
 	enum {
 		EDIT_ADD_NODE,
@@ -91,16 +90,12 @@ class VisualScriptEditor : public ScriptEditorBase {
 		CREATE_ACTION,
 	};
 
-	enum MemberAction {
-		MEMBER_EDIT,
-		MEMBER_REMOVE
-	};
+	enum MemberAction { MEMBER_EDIT,
+		MEMBER_REMOVE };
 
-	enum MemberType {
-		MEMBER_FUNCTION,
+	enum MemberType { MEMBER_FUNCTION,
 		MEMBER_VARIABLE,
-		MEMBER_SIGNAL
-	};
+		MEMBER_SIGNAL };
 
 	VBoxContainer *members_section = nullptr;
 	MenuButton *edit_menu = nullptr;
@@ -203,17 +198,22 @@ class VisualScriptEditor : public ScriptEditorBase {
 
 	void _port_action_menu(int p_option);
 
-	void connect_data(Ref<VisualScriptNode> vnode_old, Ref<VisualScriptNode> vnode, int new_id);
+	void connect_data(Ref<VisualScriptNode> vnode_old,
+			Ref<VisualScriptNode> vnode, int new_id);
 
 	NodePath drop_path;
 	Node *drop_node = nullptr;
 	Vector2 drop_position;
-	void _selected_connect_node(const String &p_text, const String &p_category, const bool p_connecting = true);
-	void connect_seq(Ref<VisualScriptNode> vnode_old, Ref<VisualScriptNode> vnode_new, int new_id);
+	void _selected_connect_node(const String &p_text, const String &p_category,
+			const bool p_connecting = true);
+	void connect_seq(Ref<VisualScriptNode> vnode_old,
+			Ref<VisualScriptNode> vnode_new, int new_id);
 
 	void _cancel_connect_node();
 	int _create_new_node_from_name(const String &p_text, const Vector2 &p_point);
-	void _selected_new_virtual_method(const String &p_text, const String &p_category, const bool p_connecting);
+	void _selected_new_virtual_method(const String &p_text,
+			const String &p_category,
+			const bool p_connecting);
 
 	int error_line = -1;
 
@@ -231,20 +231,26 @@ class VisualScriptEditor : public ScriptEditorBase {
 	void _end_node_move();
 	void _move_node(int p_id, const Vector2 &p_to);
 
-	void _get_ends(int p_node, const List<VisualScript::SequenceConnection> &p_seqs, const RBSet<int> &p_selected, RBSet<int> &r_end_nodes);
+	void _get_ends(int p_node,
+			const List<VisualScript::SequenceConnection> &p_seqs,
+			const RBSet<int> &p_selected, RBSet<int> &r_end_nodes);
 
 	void _node_moved(Vector2 p_from, Vector2 p_to, int p_id);
 	void _remove_node(int p_id);
-	void _graph_connected(const String &p_from, int p_from_slot, const String &p_to, int p_to_slot);
-	void _graph_disconnected(const String &p_from, int p_from_slot, const String &p_to, int p_to_slot);
-	void _graph_connect_to_empty(const String &p_from, int p_from_slot, const Vector2 &p_release_pos);
+	void _graph_connected(const String &p_from, int p_from_slot,
+			const String &p_to, int p_to_slot);
+	void _graph_disconnected(const String &p_from, int p_from_slot,
+			const String &p_to, int p_to_slot);
+	void _graph_connect_to_empty(const String &p_from, int p_from_slot,
+			const Vector2 &p_release_pos);
 
 	void _node_ports_changed(int p_id);
 	void _node_create();
 
 	void _update_available_nodes();
 
-	void _member_button(Object *p_item, int p_column, int p_button, MouseButton p_mouse_button);
+	void _member_button(Object *p_item, int p_column, int p_button,
+			MouseButton p_mouse_button);
 
 	void _expression_text_changed(const String &p_text, int p_id);
 	void _add_input_port(int p_id);
@@ -253,10 +259,12 @@ class VisualScriptEditor : public ScriptEditorBase {
 	void _remove_output_port(int p_id, int p_port);
 	void _change_port_type(int p_select, int p_id, int p_port, bool is_input);
 	void _update_node_size(int p_id);
-	void _port_name_focus_out(const Node *p_name_box, int p_id, int p_port, bool is_input);
+	void _port_name_focus_out(const Node *p_name_box, int p_id, int p_port,
+			bool is_input);
 
 	Vector2 _get_pos_in_graph(Vector2 p_point) const;
-	Vector2 _get_available_pos(bool p_centered = true, Vector2 p_pos = Vector2()) const;
+	Vector2 _get_available_pos(bool p_centered = true,
+			Vector2 p_pos = Vector2()) const;
 
 	bool node_has_sequence_connections(int p_id);
 
@@ -284,8 +292,10 @@ class VisualScriptEditor : public ScriptEditorBase {
 	void _on_nodes_duplicate();
 
 	Variant get_drag_data_fw(const Point2 &p_point, Control *p_from);
-	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
-	void drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
+	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data,
+			Control *p_from) const;
+	void drop_data_fw(const Point2 &p_point, const Variant &p_data,
+			Control *p_from);
 
 	int editing_id = 0;
 	int editing_input = 0;
@@ -294,7 +304,9 @@ class VisualScriptEditor : public ScriptEditorBase {
 	int data_disconnect_node = 0;
 	int data_disconnect_port = 0;
 
-	void _default_value_changed(const StringName &p_property, const Variant &p_value, const String &p_field, bool p_changing);
+	void _default_value_changed(const StringName &p_property,
+			const Variant &p_value, const String &p_field,
+			bool p_changing);
 	void _default_value_edited(Node *p_button, int p_id, int p_input_port);
 
 	void _menu_option(int p_what);
@@ -303,9 +315,14 @@ class VisualScriptEditor : public ScriptEditorBase {
 	void _comment_node_resized(const Vector2 &p_new_size, int p_node);
 
 	void _draw_color_over_button(Object *obj, Color p_color);
-	void _button_resource_previewed(const String &p_path, const Ref<Texture2D> &p_preview, const Ref<Texture2D> &p_small_preview, Variant p_ud);
+	void _button_resource_previewed(const String &p_path,
+			const Ref<Texture2D> &p_preview,
+			const Ref<Texture2D> &p_small_preview,
+			Variant p_ud);
 
-	VisualScriptNode::TypeGuess _guess_output_type(int p_port_action_node, int p_port_action_output, RBSet<int> &p_visited_nodes);
+	VisualScriptNode::TypeGuess _guess_output_type(int p_port_action_node,
+			int p_port_action_output,
+			RBSet<int> &p_visited_nodes);
 
 	void _member_rmb_selected(const Vector2 &p_pos, MouseButton p_button);
 	void _member_option(int p_option);
@@ -317,13 +334,15 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual void add_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) override;
-	virtual void set_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) override;
+	virtual void
+	add_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) override;
+	virtual void
+	set_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) override;
 
 	virtual void apply_code() override;
 	virtual Ref<Resource> get_edited_resource() const override;
 	virtual void set_edited_resource(const Ref<Resource> &p_res) override;
-	virtual void enable_editor() override;
+	virtual void enable_editor(Control *p_shortcut_context) override;
 	virtual Vector<String> get_functions() override;
 	virtual void reload_text() override;
 	virtual String get_name() override;
@@ -344,16 +363,21 @@ public:
 	virtual PackedInt32Array get_breakpoints() override;
 	virtual void set_breakpoint(int p_line, bool p_enable) override{};
 	virtual void clear_breakpoints() override{};
-	virtual void add_callback(const String &p_function, PackedStringArray p_args) override;
+	virtual void add_callback(const String &p_function,
+			PackedStringArray p_args) override;
 	virtual void update_settings() override;
 	virtual bool show_members_overview() override;
 	virtual void set_debugger_active(bool p_active) override;
-	virtual void set_tooltip_request_func(const Callable &p_toolip_callback) override;
+	virtual void
+	set_tooltip_request_func(const Callable &p_toolip_callback) override;
 	virtual Control *get_edit_menu() override;
 	virtual void clear_edit_menu() override;
-	virtual void set_find_replace_bar(FindReplaceBar *p_bar) override { p_bar->hide(); }; // Not needed here.
+	virtual void set_find_replace_bar(FindReplaceBar *p_bar) override {
+		p_bar->hide();
+	}; // Not needed here.
 	virtual bool can_lose_focus_on_node_selection() override { return false; }
 	virtual void validate() override;
+	virtual Variant get_navigation_state() override { return Variant(); }
 
 	virtual Control *get_base_editor() const override;
 
@@ -383,7 +407,8 @@ protected:
 public:
 	static VisualScriptCustomNodes *get_singleton() { return singleton; }
 
-	void add_custom_node(const String &p_name, const String &p_category, const Ref<Script> &p_script);
+	void add_custom_node(const String &p_name, const String &p_category,
+			const Ref<Script> &p_script);
 	void remove_custom_node(const String &p_name, const String &p_category);
 
 	VisualScriptCustomNodes();
