@@ -132,9 +132,6 @@ public:
 	VisualScriptFunctionCall();
 };
 
-VARIANT_ENUM_CAST(VisualScriptFunctionCall::CallMode);
-VARIANT_ENUM_CAST(VisualScriptFunctionCall::RPCCallMode);
-
 class VisualScriptPropertySet : public VisualScriptNode {
 	GDCLASS(VisualScriptPropertySet, VisualScriptNode);
 
@@ -237,9 +234,6 @@ public:
 	VisualScriptPropertySet();
 };
 
-VARIANT_ENUM_CAST(VisualScriptPropertySet::CallMode);
-VARIANT_ENUM_CAST(VisualScriptPropertySet::AssignOp);
-
 class VisualScriptPropertyGet : public VisualScriptNode {
 	GDCLASS(VisualScriptPropertyGet, VisualScriptNode);
 
@@ -321,8 +315,6 @@ public:
 	VisualScriptPropertyGet();
 };
 
-VARIANT_ENUM_CAST(VisualScriptPropertyGet::CallMode);
-
 class VisualScriptEmitSignal : public VisualScriptNode {
 	GDCLASS(VisualScriptEmitSignal, VisualScriptNode);
 
@@ -359,5 +351,21 @@ public:
 };
 
 void register_visual_script_func_nodes();
+
+#ifdef GDEXTENSION
+VARIANT_ENUM_CAST(VisualScriptFunctionCall, CallMode);
+VARIANT_ENUM_CAST(VisualScriptFunctionCall, RPCCallMode);
+VARIANT_ENUM_CAST(VisualScriptPropertySet, CallMode);
+VARIANT_ENUM_CAST(VisualScriptPropertySet, AssignOp);
+VARIANT_ENUM_CAST(VisualScriptPropertyGet, CallMode);
+
+#else
+VARIANT_ENUM_CAST(VisualScriptFunctionCall::CallMode);
+VARIANT_ENUM_CAST(VisualScriptFunctionCall::RPCCallMode);
+VARIANT_ENUM_CAST(VisualScriptPropertySet::CallMode);
+VARIANT_ENUM_CAST(VisualScriptPropertySet::AssignOp);
+VARIANT_ENUM_CAST(VisualScriptPropertyGet::CallMode);
+
+#endif
 
 #endif // VISUAL_SCRIPT_FUNC_NODES_H

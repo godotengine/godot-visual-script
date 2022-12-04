@@ -146,7 +146,12 @@ public:
 	VisualScriptBuiltinFunc();
 };
 
+#ifdef GDEXTENSION
+VARIANT_ENUM_CAST(VisualScriptBuiltinFunc, BuiltinFunc);
+
+#else
 VARIANT_ENUM_CAST(VisualScriptBuiltinFunc::BuiltinFunc)
+#endif
 
 void register_visual_script_builtin_func_node();
 

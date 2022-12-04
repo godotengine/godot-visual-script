@@ -31,9 +31,16 @@
 #ifndef VISUAL_SCRIPT_NODES_H
 #define VISUAL_SCRIPT_NODES_H
 
+#ifdef GDEXTENSION
+#include <godot/gdnative_interface.h>
+using namespace godot;
+
+#else
 #include "core/object/gdvirtual.gen.inc"
 #include "core/object/script_language.h"
 #include "scene/main/multiplayer_api.h"
+#endif
+
 #include "visual_script.h"
 
 class VisualScriptFunction : public VisualScriptNode {
@@ -590,8 +597,6 @@ public:
 	VisualScriptMathConstant();
 };
 
-VARIANT_ENUM_CAST(VisualScriptMathConstant::MathConstant)
-
 class VisualScriptEngineSingleton : public VisualScriptNode {
 	GDCLASS(VisualScriptEngineSingleton, VisualScriptNode);
 
@@ -820,8 +825,6 @@ public:
 	VisualScriptCustomNode();
 };
 
-VARIANT_ENUM_CAST(VisualScriptCustomNode::StartMode);
-
 class VisualScriptSubCall : public VisualScriptNode {
 	GDCLASS(VisualScriptSubCall, VisualScriptNode);
 
@@ -1040,8 +1043,6 @@ public:
 	VisualScriptInputAction();
 };
 
-VARIANT_ENUM_CAST(VisualScriptInputAction::Mode)
-
 class VisualScriptDeconstruct : public VisualScriptNode {
 	GDCLASS(VisualScriptDeconstruct, VisualScriptNode);
 
@@ -1088,5 +1089,17 @@ public:
 
 void register_visual_script_nodes();
 void unregister_visual_script_nodes();
+
+#ifdef GDEXTENSION
+VARIANT_ENUM_CAST(VisualScriptInputAction, Mode);
+VARIANT_ENUM_CAST(VisualScriptMathConstant, MathConstant);
+VARIANT_ENUM_CAST(VisualScriptCustomNode, StartMode);
+
+#else
+VARIANT_ENUM_CAST(VisualScriptInputAction::Mode);
+VARIANT_ENUM_CAST(VisualScriptMathConstant::MathConstant);
+VARIANT_ENUM_CAST(VisualScriptCustomNode::StartMode);
+
+#endif
 
 #endif // VISUAL_SCRIPT_NODES_H

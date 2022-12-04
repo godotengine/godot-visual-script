@@ -30,8 +30,19 @@
 
 #include "register_types.h"
 
+#ifdef GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/godot.hpp>
+
+using namespace godot;
+
+#else
+#include "modules/register_module_types.h"
 #include "core/config/engine.h"
 #include "core/io/resource_loader.h"
+#endif
+
 #include "visual_script.h"
 #include "visual_script_builtin_funcs.h"
 #include "visual_script_expression.h"
@@ -148,3 +159,19 @@ void uninitialize_visual_script_module(ModuleInitializationLevel p_level) {
 	}
 #endif
 }
+#ifdef GDEXTENSION
+extern "C" {
+
+// Initialization.
+
+GDNativeBool GDN_EXPORT example_library_init(const GDNativeInterface *p_interface, const GDNativeExtensionClassLibraryPtr p_library, GDNativeInitialization *r_initialization) {
+        godot::GDExtensionBinding::InitObject init_obj(p_interface, p_library, r_initialization);
+
+        init_obj.register_initializer(initialize_visual_script_module);
+        init_obj.register_terminator(uninitialize_visual_script_module);
+        init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+
+        return init_obj.init();
+}
+}
+#endif

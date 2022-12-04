@@ -31,12 +31,39 @@
 #ifndef VISUAL_SCRIPT_H
 #define VISUAL_SCRIPT_H
 
+#ifdef GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/script_language_extension.hpp>
+
+#include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/templates/list.hpp>
+#include <godot_cpp/templates/rb_set.hpp>
+#include <godot_cpp/templates/rb_set.hpp>
+#include <godot_cpp/templates/vector.hpp>
+
+using namespace godot;
+
+#define RES_BASE_EXTENSION(ext)
+
+// TODO This will need more work than just this.
+#define ScriptLanguage ScriptLanguageExtension
+
+// TODO ScriptInstance (via C struct: GDNativeExtensionScriptInstanceInfo, see gdnative_interface.h).
+class ScriptInstance {
+
+};
+
+#else
 #include "core/debugger/engine_debugger.h"
 #include "core/debugger/script_debugger.h"
 #include "core/doc_data.h"
 #include "core/object/script_language.h"
 #include "core/os/thread.h"
 #include "core/templates/rb_set.h"
+#endif
 
 class VisualScriptInstance;
 class VisualScriptNodeInstance;
@@ -64,31 +91,31 @@ protected:
 public:
 	Ref<VisualScript> get_visual_script() const;
 
-	virtual int get_output_sequence_port_count() const = 0;
-	virtual bool has_input_sequence_port() const = 0;
+	virtual int get_output_sequence_port_count() const { return 0; }
+	virtual bool has_input_sequence_port() const { return false; }
 
-	virtual String get_output_sequence_port_text(int p_port) const = 0;
+	virtual String get_output_sequence_port_text(int p_port) const { return ""; }
 
 	virtual bool has_mixed_input_and_sequence_ports() const { return false; }
 
-	virtual int get_input_value_port_count() const = 0;
-	virtual int get_output_value_port_count() const = 0;
+	virtual int get_input_value_port_count() const { return 0; }
+	virtual int get_output_value_port_count() const { return 0; }
 
-	virtual PropertyInfo get_input_value_port_info(int p_idx) const = 0;
-	virtual PropertyInfo get_output_value_port_info(int p_idx) const = 0;
+	virtual PropertyInfo get_input_value_port_info(int p_idx) const { return PropertyInfo(); }
+	virtual PropertyInfo get_output_value_port_info(int p_idx) const { return PropertyInfo(); }
 
 	void set_default_input_value(int p_port, const Variant &p_value);
 	Variant get_default_input_value(int p_port) const;
 
-	virtual String get_caption() const = 0;
+	virtual String get_caption() const { return ""; }
 	virtual String get_text() const;
-	virtual String get_category() const = 0;
+	virtual String get_category() const { return ""; }
 
 	// Used by editor, this is not really saved.
 	void set_breakpoint(bool p_breakpoint);
 	bool is_breakpoint() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) = 0;
+	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) { return nullptr; }
 
 	struct TypeGuess {
 		Variant::Type type = Variant::NIL;
@@ -154,6 +181,7 @@ public:
 
 	virtual int get_working_memory_size() const { return 0; }
 
+	// TODO What to do with Callable::CallError ? Add to godot-cpp? Does it make sense? Is it exposed to extensions?
 	virtual int step(const Variant **p_inputs, Variant **p_outputs, StartMode p_start_mode, Variant *p_working_mem, Callable::CallError &r_error, String &r_error_str) = 0; // Do a step, return which sequence port to go out.
 
 	Ref<VisualScriptNode> get_base_node() { return Ref<VisualScriptNode>(base); }
