@@ -7,5 +7,5 @@ env_vs = env_modules.Clone()
 
 env_vs.add_source_files(env.modules_sources, "*.cpp")
 
-if env["tools"]:
+if env["target"] == "editor":
     env_vs.add_source_files(env.modules_sources, "editor/*.cpp")

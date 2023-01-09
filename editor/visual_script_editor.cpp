@@ -48,6 +48,7 @@
 #include "scene/gui/graph_edit.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/view_panner.h"
+#include "editor/inspector_dock.h"
 #include "scene/main/window.h"
 
 #ifdef TOOLS_ENABLED
@@ -1404,7 +1405,7 @@ void VisualScriptEditor::_create_function_dialog() {
 	func_name_box->grab_focus();
 	for (int i = 0; i < func_input_vbox->get_child_count(); i++) {
 		Node *nd = func_input_vbox->get_child(i);
-		nd->queue_delete();
+		nd->queue_free();
 	}
 }
 
@@ -1497,7 +1498,7 @@ void VisualScriptEditor::_add_func_input() {
 
 void VisualScriptEditor::_remove_func_input(Node *p_node) {
 	func_input_vbox->remove_child(p_node);
-	p_node->queue_delete();
+	p_node->queue_free();
 }
 
 void VisualScriptEditor::_deselect_input_names() {
@@ -2700,7 +2701,7 @@ void VisualScriptEditor::set_edited_resource(const Ref<Resource> &p_res) {
 	call_deferred(SNAME("_update_members"));
 }
 
-void VisualScriptEditor::enable_editor() {
+void VisualScriptEditor::enable_editor(Control *p_shortcut_context) {
 }
 
 Vector<String> VisualScriptEditor::get_functions() {
