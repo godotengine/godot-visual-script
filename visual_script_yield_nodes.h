@@ -80,7 +80,6 @@ public:
 
 	VisualScriptYield();
 };
-VARIANT_ENUM_CAST(VisualScriptYield::YieldMode)
 
 class VisualScriptYieldSignal : public VisualScriptNode {
 	GDCLASS(VisualScriptYieldSignal, VisualScriptNode);
@@ -140,8 +139,17 @@ public:
 	VisualScriptYieldSignal();
 };
 
+void register_visual_script_yield_nodes();
+
+#ifdef GDEXTENSION
+VARIANT_ENUM_CAST(VisualScriptYield, YieldMode)
+VARIANT_ENUM_CAST(VisualScriptYieldSignal, CallMode);
+
+
+#else
+VARIANT_ENUM_CAST(VisualScriptYield::YieldMode)
 VARIANT_ENUM_CAST(VisualScriptYieldSignal::CallMode);
 
-void register_visual_script_yield_nodes();
+#endif
 
 #endif // VISUAL_SCRIPT_YIELD_NODES_H
