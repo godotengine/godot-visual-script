@@ -1,32 +1,32 @@
-/*************************************************************************/
-/*  visual_script.h                                                      */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  visual_script.h                                                       */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #ifndef VISUAL_SCRIPT_H
 #define VISUAL_SCRIPT_H
@@ -88,7 +88,8 @@ public:
 	void set_breakpoint(bool p_breakpoint);
 	bool is_breakpoint() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) = 0;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) = 0;
 
 	struct TypeGuess {
 		Variant::Type type = Variant::NIL;
@@ -108,7 +109,8 @@ class VisualScriptNodeInstance {
 	enum { // Input argument addressing.
 		INPUT_SHIFT = 1 << 24,
 		INPUT_MASK = INPUT_SHIFT - 1,
-		INPUT_DEFAULT_VALUE_BIT = INPUT_SHIFT, // from unassigned input port, using default value (edited by user)
+		INPUT_DEFAULT_VALUE_BIT = INPUT_SHIFT, // from unassigned input port, using
+											   // default value (edited by user)
 	};
 
 	int id = 0;
@@ -139,22 +141,31 @@ public:
 		STEP_FLAG_GO_BACK_BIT = STEP_SHIFT << 1, // go back to previous node
 		STEP_NO_ADVANCE_BIT = STEP_SHIFT << 2, // do not advance past this node
 		STEP_EXIT_FUNCTION_BIT = STEP_SHIFT << 3, // return from function
-		STEP_YIELD_BIT = STEP_SHIFT << 4, // yield (will find VisualScriptFunctionState state in first working memory)
+		STEP_YIELD_BIT = STEP_SHIFT
+				<< 4, // yield (will find VisualScriptFunctionState state
+					  // in first working memory)
 
-		FLOW_STACK_PUSHED_BIT = 1 << 30, // in flow stack, means bit was pushed (must go back here if end of sequence)
+		FLOW_STACK_PUSHED_BIT = 1 << 30, // in flow stack, means bit was pushed
+										 // (must go back here if end of sequence)
 		FLOW_STACK_MASK = FLOW_STACK_PUSHED_BIT - 1
 
 	};
 
 	_FORCE_INLINE_ int get_input_port_count() const { return input_port_count; }
 	_FORCE_INLINE_ int get_output_port_count() const { return output_port_count; }
-	_FORCE_INLINE_ int get_sequence_output_count() const { return sequence_output_count; }
+	_FORCE_INLINE_ int get_sequence_output_count() const {
+		return sequence_output_count;
+	}
 
 	_FORCE_INLINE_ int get_id() const { return id; }
 
 	virtual int get_working_memory_size() const { return 0; }
 
-	virtual int step(const Variant **p_inputs, Variant **p_outputs, StartMode p_start_mode, Variant *p_working_mem, Callable::CallError &r_error, String &r_error_str) = 0; // Do a step, return which sequence port to go out.
+	virtual int
+	step(const Variant **p_inputs, Variant **p_outputs, StartMode p_start_mode,
+			Variant *p_working_mem, Callable::CallError &r_error,
+			String &
+					r_error_str) = 0; // Do a step, return which sequence port to go out.
 
 	Ref<VisualScriptNode> get_base_node() { return Ref<VisualScriptNode>(base); }
 
@@ -244,7 +255,8 @@ private:
 #ifdef TOOLS_ENABLED
 	RBSet<PlaceHolderScriptInstance *> placeholders;
 	// void _update_placeholder(PlaceHolderScriptInstance *p_placeholder);
-	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder) override;
+	virtual void
+	_placeholder_erased(PlaceHolderScriptInstance *p_placeholder) override;
 	void _update_placeholders();
 #endif
 
@@ -272,7 +284,8 @@ public:
 	int get_function_node_id(const StringName &p_name) const;
 	void set_tool_enabled(bool p_enabled);
 
-	void add_node(int p_id, const Ref<VisualScriptNode> &p_node, const Point2 &p_pos = Point2());
+	void add_node(int p_id, const Ref<VisualScriptNode> &p_node,
+			const Point2 &p_pos = Point2());
 	void remove_node(int p_id);
 	bool has_node(int p_id) const;
 	Ref<VisualScriptNode> get_node(int p_id) const;
@@ -282,22 +295,31 @@ public:
 
 	void sequence_connect(int p_from_node, int p_from_output, int p_to_node);
 	void sequence_disconnect(int p_from_node, int p_from_output, int p_to_node);
-	bool has_sequence_connection(int p_from_node, int p_from_output, int p_to_node) const;
-	void get_sequence_connection_list(List<SequenceConnection> *r_connection) const;
+	bool has_sequence_connection(int p_from_node, int p_from_output,
+			int p_to_node) const;
+	void
+	get_sequence_connection_list(List<SequenceConnection> *r_connection) const;
 	RBSet<int> get_output_sequence_ports_connected(int from_node);
 
-	void data_connect(int p_from_node, int p_from_port, int p_to_node, int p_to_port);
-	void data_disconnect(int p_from_node, int p_from_port, int p_to_node, int p_to_port);
-	bool has_data_connection(int p_from_node, int p_from_port, int p_to_node, int p_to_port) const;
+	void data_connect(int p_from_node, int p_from_port, int p_to_node,
+			int p_to_port);
+	void data_disconnect(int p_from_node, int p_from_port, int p_to_node,
+			int p_to_port);
+	bool has_data_connection(int p_from_node, int p_from_port, int p_to_node,
+			int p_to_port) const;
 	void get_data_connection_list(List<DataConnection> *r_connection) const;
 
 	bool is_input_value_port_connected(int p_node, int p_port) const;
-	bool get_input_value_port_connection_source(int p_node, int p_port, int *r_node, int *r_port) const;
+	bool get_input_value_port_connection_source(int p_node, int p_port,
+			int *r_node, int *r_port) const;
 
-	void add_variable(const StringName &p_name, const Variant &p_default_value = Variant(), bool p_export = false);
+	void add_variable(const StringName &p_name,
+			const Variant &p_default_value = Variant(),
+			bool p_export = false);
 	bool has_variable(const StringName &p_name) const;
 	void remove_variable(const StringName &p_name);
-	void set_variable_default_value(const StringName &p_name, const Variant &p_value);
+	void set_variable_default_value(const StringName &p_name,
+			const Variant &p_value);
 	Variant get_variable_default_value(const StringName &p_name) const;
 	void set_variable_info(const StringName &p_name, const PropertyInfo &p_info);
 	PropertyInfo get_variable_info(const StringName &p_name) const;
@@ -308,17 +330,26 @@ public:
 
 	void add_custom_signal(const StringName &p_name);
 	bool has_custom_signal(const StringName &p_name) const;
-	void custom_signal_add_argument(const StringName &p_func, Variant::Type p_type, const String &p_name, int p_index = -1);
-	void custom_signal_set_argument_type(const StringName &p_func, int p_argidx, Variant::Type p_type);
-	Variant::Type custom_signal_get_argument_type(const StringName &p_func, int p_argidx) const;
-	void custom_signal_set_argument_name(const StringName &p_func, int p_argidx, const String &p_name);
-	String custom_signal_get_argument_name(const StringName &p_func, int p_argidx) const;
+	void custom_signal_add_argument(const StringName &p_func,
+			Variant::Type p_type, const String &p_name,
+			int p_index = -1);
+	void custom_signal_set_argument_type(const StringName &p_func, int p_argidx,
+			Variant::Type p_type);
+	Variant::Type custom_signal_get_argument_type(const StringName &p_func,
+			int p_argidx) const;
+	void custom_signal_set_argument_name(const StringName &p_func, int p_argidx,
+			const String &p_name);
+	String custom_signal_get_argument_name(const StringName &p_func,
+			int p_argidx) const;
 	void custom_signal_remove_argument(const StringName &p_func, int p_argidx);
 	int custom_signal_get_argument_count(const StringName &p_func) const;
-	void custom_signal_swap_argument(const StringName &p_func, int p_argidx, int p_with_argidx);
+	void custom_signal_swap_argument(const StringName &p_func, int p_argidx,
+			int p_with_argidx);
 	void remove_custom_signal(const StringName &p_name);
-	void rename_custom_signal(const StringName &p_name, const StringName &p_new_name);
-	RBSet<int> get_output_sequence_ports_connected(const String &edited_func, int from_node);
+	void rename_custom_signal(const StringName &p_name,
+			const StringName &p_new_name);
+	RBSet<int> get_output_sequence_ports_connected(const String &edited_func,
+			int from_node);
 
 	void get_custom_signal_list(List<StringName> *r_custom_signals) const;
 
@@ -329,6 +360,7 @@ public:
 	virtual bool can_instantiate() const override;
 
 	virtual Ref<Script> get_base_script() const override;
+	virtual StringName get_global_name() const override;
 	virtual StringName get_instance_base_type() const override;
 	virtual ScriptInstance *instance_create(Object *p_this) override;
 	virtual bool instance_has(const Object *p_this) const override;
@@ -351,15 +383,18 @@ public:
 	virtual ScriptLanguage *get_language() const override;
 
 	virtual bool has_script_signal(const StringName &p_signal) const override;
-	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const override;
+	virtual void
+	get_script_signal_list(List<MethodInfo> *r_signals) const override;
 
-	virtual bool get_property_default_value(const StringName &p_property, Variant &r_value) const override;
+	virtual bool get_property_default_value(const StringName &p_property,
+			Variant &r_value) const override;
 	virtual void get_script_method_list(List<MethodInfo> *p_list) const override;
 
 	virtual bool has_method(const StringName &p_method) const override;
 	virtual MethodInfo get_method_info(const StringName &p_method) const override;
 
-	virtual void get_script_property_list(List<PropertyInfo> *p_list) const override;
+	virtual void
+	get_script_property_list(List<PropertyInfo> *p_list) const override;
 
 	virtual int get_member_line(const StringName &p_member) const override;
 
@@ -398,8 +433,15 @@ class VisualScriptInstance : public ScriptInstance {
 
 	StringName source;
 
-	void _dependency_step(VisualScriptNodeInstance *node, int p_pass, int *pass_stack, const Variant **input_args, Variant **output_args, Variant *variant_stack, Callable::CallError &r_error, String &error_str, VisualScriptNodeInstance **r_error_node);
-	Variant _call_internal(const StringName &p_method, void *p_stack, int p_stack_size, VisualScriptNodeInstance *p_node, int p_flow_stack_pos, int p_pass, bool p_resuming_yield, Callable::CallError &r_error);
+	void _dependency_step(VisualScriptNodeInstance *node, int p_pass,
+			int *pass_stack, const Variant **input_args,
+			Variant **output_args, Variant *variant_stack,
+			Callable::CallError &r_error, String &error_str,
+			VisualScriptNodeInstance **r_error_node);
+	Variant _call_internal(const StringName &p_method, void *p_stack,
+			int p_stack_size, VisualScriptNodeInstance *p_node,
+			int p_flow_stack_pos, int p_pass,
+			bool p_resuming_yield, Callable::CallError &r_error);
 
 	friend class VisualScriptFunctionState; // For yield.
 	friend class VisualScriptLanguage; // For debugger.
@@ -407,14 +449,21 @@ public:
 	virtual bool set(const StringName &p_name, const Variant &p_value);
 	virtual bool get(const StringName &p_name, Variant &r_ret) const;
 	virtual void get_property_list(List<PropertyInfo> *p_properties) const;
-	virtual Variant::Type get_property_type(const StringName &p_name, bool *r_is_valid = nullptr) const;
+	virtual Variant::Type get_property_type(const StringName &p_name,
+			bool *r_is_valid = nullptr) const;
 
-	virtual bool property_can_revert(const StringName &p_name) const { return false; };
-	virtual bool property_get_revert(const StringName &p_name, Variant &r_ret) const { return false; };
+	virtual bool property_can_revert(const StringName &p_name) const {
+		return false;
+	};
+	virtual bool property_get_revert(const StringName &p_name,
+			Variant &r_ret) const {
+		return false;
+	};
 
 	virtual void get_method_list(List<MethodInfo> *p_list) const;
 	virtual bool has_method(const StringName &p_method) const;
-	virtual Variant callp(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error);
+	virtual Variant callp(const StringName &p_method, const Variant **p_args,
+			int p_argcount, Callable::CallError &r_error);
 	virtual void notification(int p_notification);
 	String to_string(bool *r_valid);
 
@@ -468,7 +517,8 @@ class VisualScriptFunctionState : public RefCounted {
 	int flow_stack_pos = 0;
 	int pass = 0;
 
-	Variant _signal_callback(const Variant **p_args, int p_argcount, Callable::CallError &r_error);
+	Variant _signal_callback(const Variant **p_args, int p_argcount,
+			Callable::CallError &r_error);
 
 protected:
 	static void _bind_methods();
@@ -481,7 +531,8 @@ public:
 	~VisualScriptFunctionState();
 };
 
-typedef Ref<VisualScriptNode> (*VisualScriptNodeRegisterFunc)(const String &p_type);
+typedef Ref<VisualScriptNode> (*VisualScriptNodeRegisterFunc)(
+		const String &p_type);
 
 class VisualScriptLanguage : public ScriptLanguage {
 	HashMap<String, VisualScriptNodeRegisterFunc> register_funcs;
@@ -512,20 +563,28 @@ public:
 	Mutex lock;
 
 	bool debug_break(const String &p_error, bool p_allow_continue = true);
-	bool debug_break_parse(const String &p_file, int p_node, const String &p_error);
+	bool debug_break_parse(const String &p_file, int p_node,
+			const String &p_error);
 
-	_FORCE_INLINE_ void enter_function(VisualScriptInstance *p_instance, const StringName *p_function, Variant *p_stack, Variant **p_work_mem, int *current_id) {
+	_FORCE_INLINE_ void enter_function(VisualScriptInstance *p_instance,
+			const StringName *p_function,
+			Variant *p_stack, Variant **p_work_mem,
+			int *current_id) {
 		if (Thread::get_main_id() != Thread::get_caller_id()) {
 			return; // No support for other threads than main for now.
 		}
 
-		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 && EngineDebugger::get_script_debugger()->get_depth() >= 0) {
-			EngineDebugger::get_script_debugger()->set_depth(EngineDebugger::get_script_debugger()->get_depth() + 1);
+		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 &&
+				EngineDebugger::get_script_debugger()->get_depth() >= 0) {
+			EngineDebugger::get_script_debugger()->set_depth(
+					EngineDebugger::get_script_debugger()->get_depth() + 1);
 		}
 
 		if (_debug_call_stack_pos >= _debug_max_call_stack) {
 			// Stack overflow.
-			_debug_error = vformat("Stack overflow (stack size: %s). Check for infinite recursion in your script.", _debug_max_call_stack);
+			_debug_error = vformat("Stack overflow (stack size: %s). Check for "
+								   "infinite recursion in your script.",
+					_debug_max_call_stack);
 			EngineDebugger::get_script_debugger()->debug(this);
 			return;
 		}
@@ -543,8 +602,10 @@ public:
 			return; // No support for other threads than main for now.
 		}
 
-		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 && EngineDebugger::get_script_debugger()->get_depth() >= 0) {
-			EngineDebugger::get_script_debugger()->set_depth(EngineDebugger::get_script_debugger()->get_depth() - 1);
+		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 &&
+				EngineDebugger::get_script_debugger()->get_depth() >= 0) {
+			EngineDebugger::get_script_debugger()->set_depth(
+					EngineDebugger::get_script_debugger()->get_depth() - 1);
 		}
 
 		if (_debug_call_stack_pos == 0) {
@@ -564,24 +625,34 @@ public:
 	virtual void init() override;
 	virtual String get_type() const override;
 	virtual String get_extension() const override;
-	virtual Error execute_file(const String &p_path) override;
 	virtual void finish() override;
 
 	/* EDITOR FUNCTIONS */
 	virtual void get_reserved_words(List<String> *p_words) const override;
 	virtual bool is_control_flow_keyword(String p_keyword) const override;
-	virtual void get_comment_delimiters(List<String> *p_delimiters) const override;
+	virtual void
+	get_comment_delimiters(List<String> *p_delimiters) const override;
 	virtual void get_string_delimiters(List<String> *p_delimiters) const override;
 	virtual bool is_using_templates() override;
-	virtual Ref<Script> make_template(const String &p_template, const String &p_class_name, const String &p_base_class_name) const override;
-	virtual bool validate(const String &p_script, const String &p_path = "", List<String> *r_functions = nullptr, List<ScriptLanguage::ScriptError> *r_errors = nullptr, List<ScriptLanguage::Warning> *r_warnings = nullptr, HashSet<int> *r_safe_lines = nullptr) const override;
+	virtual Ref<Script>
+	make_template(const String &p_template, const String &p_class_name,
+			const String &p_base_class_name) const override;
+	virtual bool validate(const String &p_script, const String &p_path = "",
+			List<String> *r_functions = nullptr,
+			List<ScriptLanguage::ScriptError> *r_errors = nullptr,
+			List<ScriptLanguage::Warning> *r_warnings = nullptr,
+			HashSet<int> *r_safe_lines = nullptr) const override;
 	virtual Script *create_script() const override;
 	virtual bool has_named_classes() const override;
 	virtual bool supports_builtin_mode() const override;
-	virtual int find_function(const String &p_function, const String &p_code) const override;
-	virtual String make_function(const String &p_class, const String &p_name, const PackedStringArray &p_args) const override;
-	virtual void auto_indent_code(String &p_code, int p_from_line, int p_to_line) const override;
-	virtual void add_global_constant(const StringName &p_variable, const Variant &p_value) override;
+	virtual int find_function(const String &p_function,
+			const String &p_code) const override;
+	virtual String make_function(const String &p_class, const String &p_name,
+			const PackedStringArray &p_args) const override;
+	virtual void auto_indent_code(String &p_code, int p_from_line,
+			int p_to_line) const override;
+	virtual void add_global_constant(const StringName &p_variable,
+			const Variant &p_value) override;
 
 	/* DEBUGGER FUNCTIONS */
 
@@ -590,27 +661,48 @@ public:
 	virtual int debug_get_stack_level_line(int p_level) const override;
 	virtual String debug_get_stack_level_function(int p_level) const override;
 	virtual String debug_get_stack_level_source(int p_level) const override;
-	virtual void debug_get_stack_level_locals(int p_level, List<String> *p_locals, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override;
-	virtual void debug_get_stack_level_members(int p_level, List<String> *p_members, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override;
-	virtual void debug_get_globals(List<String> *p_locals, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override;
-	virtual String debug_parse_stack_level_expression(int p_level, const String &p_expression, int p_max_subitems = -1, int p_max_depth = -1) override;
+	virtual void debug_get_stack_level_locals(int p_level, List<String> *p_locals,
+			List<Variant> *p_values,
+			int p_max_subitems = -1,
+			int p_max_depth = -1) override;
+	virtual void debug_get_stack_level_members(int p_level,
+			List<String> *p_members,
+			List<Variant> *p_values,
+			int p_max_subitems = -1,
+			int p_max_depth = -1) override;
+	virtual void debug_get_globals(List<String> *p_locals,
+			List<Variant> *p_values,
+			int p_max_subitems = -1,
+			int p_max_depth = -1) override;
+	virtual String
+	debug_parse_stack_level_expression(int p_level, const String &p_expression,
+			int p_max_subitems = -1,
+			int p_max_depth = -1) override;
 
 	virtual void reload_all_scripts() override;
-	virtual void reload_tool_script(const Ref<Script> &p_script, bool p_soft_reload) override;
+	virtual void reload_tool_script(const Ref<Script> &p_script,
+			bool p_soft_reload) override;
 	/* LOADER FUNCTIONS */
 
-	virtual void get_recognized_extensions(List<String> *p_extensions) const override;
-	virtual void get_public_functions(List<MethodInfo> *p_functions) const override;
-	virtual void get_public_constants(List<Pair<String, Variant>> *p_constants) const override;
-	virtual void get_public_annotations(List<MethodInfo> *p_annotations) const override;
+	virtual void
+	get_recognized_extensions(List<String> *p_extensions) const override;
+	virtual void
+	get_public_functions(List<MethodInfo> *p_functions) const override;
+	virtual void
+	get_public_constants(List<Pair<String, Variant>> *p_constants) const override;
+	virtual void
+	get_public_annotations(List<MethodInfo> *p_annotations) const override;
 
 	virtual void profiling_start() override;
 	virtual void profiling_stop() override;
 
-	virtual int profiling_get_accumulated_data(ProfilingInfo *p_info_arr, int p_info_max) override;
-	virtual int profiling_get_frame_data(ProfilingInfo *p_info_arr, int p_info_max) override;
+	virtual int profiling_get_accumulated_data(ProfilingInfo *p_info_arr,
+			int p_info_max) override;
+	virtual int profiling_get_frame_data(ProfilingInfo *p_info_arr,
+			int p_info_max) override;
 
-	void add_register_func(const String &p_name, VisualScriptNodeRegisterFunc p_func);
+	void add_register_func(const String &p_name,
+			VisualScriptNodeRegisterFunc p_func);
 	void remove_register_func(const String &p_name);
 	Ref<VisualScriptNode> create_node_from_name(const String &p_name);
 	void get_registered_node_names(List<String> *r_names);

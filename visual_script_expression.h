@@ -1,38 +1,37 @@
-/*************************************************************************/
-/*  visual_script_expression.h                                           */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  visual_script_expression.h                                            */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #ifndef VISUAL_SCRIPT_EXPRESSION_H
 #define VISUAL_SCRIPT_EXPRESSION_H
 
 #include "visual_script.h"
-#include "visual_script_builtin_funcs.h"
 
 class VisualScriptExpression : public VisualScriptNode {
 	GDCLASS(VisualScriptExpression, VisualScriptNode);
@@ -125,7 +124,6 @@ class VisualScriptExpression : public VisualScriptNode {
 			TYPE_ARRAY,
 			TYPE_DICTIONARY,
 			TYPE_CONSTRUCTOR,
-			TYPE_BUILTIN_FUNC,
 			TYPE_CALL
 		};
 
@@ -152,16 +150,12 @@ class VisualScriptExpression : public VisualScriptNode {
 
 	struct InputNode : public ENode {
 		int index = 0;
-		InputNode() {
-			type = TYPE_INPUT;
-		}
+		InputNode() { type = TYPE_INPUT; }
 	};
 
 	struct ConstantNode : public ENode {
 		Variant value;
-		ConstantNode() {
-			type = TYPE_CONSTANT;
-		}
+		ConstantNode() { type = TYPE_CONSTANT; }
 	};
 
 	struct OperatorNode : public ENode {
@@ -169,42 +163,32 @@ class VisualScriptExpression : public VisualScriptNode {
 
 		ENode *nodes[2] = { nullptr, nullptr };
 
-		OperatorNode() {
-			type = TYPE_OPERATOR;
-		}
+		OperatorNode() { type = TYPE_OPERATOR; }
 	};
 
 	struct SelfNode : public ENode {
-		SelfNode() {
-			type = TYPE_SELF;
-		}
+		SelfNode() { type = TYPE_SELF; }
 	};
 
 	struct IndexNode : public ENode {
 		ENode *base = nullptr;
 		ENode *index = nullptr;
 
-		IndexNode() {
-			type = TYPE_INDEX;
-		}
+		IndexNode() { type = TYPE_INDEX; }
 	};
 
 	struct NamedIndexNode : public ENode {
 		ENode *base = nullptr;
 		StringName name;
 
-		NamedIndexNode() {
-			type = TYPE_NAMED_INDEX;
-		}
+		NamedIndexNode() { type = TYPE_NAMED_INDEX; }
 	};
 
 	struct ConstructorNode : public ENode {
 		Variant::Type data_type = Variant::Type::NIL;
 		Vector<ENode *> arguments;
 
-		ConstructorNode() {
-			type = TYPE_CONSTRUCTOR;
-		}
+		ConstructorNode() { type = TYPE_CONSTRUCTOR; }
 	};
 
 	struct CallNode : public ENode {
@@ -212,31 +196,17 @@ class VisualScriptExpression : public VisualScriptNode {
 		StringName method;
 		Vector<ENode *> arguments;
 
-		CallNode() {
-			type = TYPE_CALL;
-		}
+		CallNode() { type = TYPE_CALL; }
 	};
 
 	struct ArrayNode : public ENode {
 		Vector<ENode *> array;
-		ArrayNode() {
-			type = TYPE_ARRAY;
-		}
+		ArrayNode() { type = TYPE_ARRAY; }
 	};
 
 	struct DictionaryNode : public ENode {
 		Vector<ENode *> dict;
-		DictionaryNode() {
-			type = TYPE_DICTIONARY;
-		}
-	};
-
-	struct BuiltinFuncNode : public ENode {
-		VisualScriptBuiltinFunc::BuiltinFunc func = VisualScriptBuiltinFunc::BuiltinFunc::BYTES_TO_VAR;
-		Vector<ENode *> arguments;
-		BuiltinFuncNode() {
-			type = TYPE_BUILTIN_FUNC;
-		}
+		DictionaryNode() { type = TYPE_DICTIONARY; }
 	};
 
 	template <class T>
@@ -273,7 +243,8 @@ public:
 	virtual String get_text() const override;
 	virtual String get_category() const override { return "operators"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptExpression();
 	~VisualScriptExpression();

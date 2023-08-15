@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="VisualScriptFunctionCall" inherits="VisualScriptNode" version="4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="VisualScriptFunctionCall" inherits="VisualScriptNode" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		A Visual Script node for calling a function.
 	</brief_description>
@@ -33,7 +33,7 @@
 		<member name="singleton" type="StringName" setter="set_singleton" getter="get_singleton">
 			The singleton to call the method on. Used when [member call_mode] is set to [constant CALL_MODE_SINGLETON].
 		</member>
-		<member name="use_default_args" type="int" setter="set_use_default_args" getter="get_use_default_args">
+		<member name="use_default_args" type="int" setter="set_use_default_args" getter="get_use_default_args" default="0">
 			Number of default arguments that will be used when calling the function. Can't be higher than the number of available default arguments in the method's declaration.
 		</member>
 		<member name="validate" type="bool" setter="set_validate" getter="get_validate" default="true">
