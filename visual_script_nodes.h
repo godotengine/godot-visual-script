@@ -1,32 +1,32 @@
-/*************************************************************************/
-/*  visual_script_nodes.h                                                */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  visual_script_nodes.h                                                 */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #ifndef VISUAL_SCRIPT_NODES_H
 #define VISUAL_SCRIPT_NODES_H
@@ -74,7 +74,10 @@ public:
 	virtual String get_text() const override;
 	virtual String get_category() const override { return "flow_control"; }
 
-	void add_argument(Variant::Type p_type, const String &p_name, int p_index = -1, const PropertyHint p_hint = PROPERTY_HINT_NONE, const String &p_hint_string = String(""));
+	void add_argument(Variant::Type p_type, const String &p_name,
+			int p_index = -1,
+			const PropertyHint p_hint = PROPERTY_HINT_NONE,
+			const String &p_hint_string = String(""));
 	void set_argument_type(int p_argidx, Variant::Type p_type);
 	Variant::Type get_argument_type(int p_argidx) const;
 	void set_argument_name(int p_argidx, const String &p_name);
@@ -94,7 +97,8 @@ public:
 	void set_rpc_mode(MultiplayerAPI::RPCMode p_mode);
 	MultiplayerAPI::RPCMode get_rpc_mode() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	virtual void reset_state() override;
 
@@ -154,12 +158,14 @@ public:
 	virtual PropertyInfo get_input_value_port_info(int p_idx) const override;
 	virtual PropertyInfo get_output_value_port_info(int p_idx) const override;
 
-	void add_input_data_port(Variant::Type p_type, const String &p_name, int p_index = -1);
+	void add_input_data_port(Variant::Type p_type, const String &p_name,
+			int p_index = -1);
 	void set_input_data_port_type(int p_idx, Variant::Type p_type);
 	void set_input_data_port_name(int p_idx, const String &p_name);
 	void remove_input_data_port(int p_argidx);
 
-	void add_output_data_port(Variant::Type p_type, const String &p_name, int p_index = -1);
+	void add_output_data_port(Variant::Type p_type, const String &p_name,
+			int p_index = -1);
 	void set_output_data_port_type(int p_idx, Variant::Type p_type);
 	void set_output_data_port_name(int p_idx, const String &p_name);
 	void remove_output_data_port(int p_argidx);
@@ -189,7 +195,8 @@ public:
 	virtual String get_text() const override;
 	virtual String get_category() const override { return "functions"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptComposeArray();
 };
@@ -226,7 +233,8 @@ public:
 
 	static String get_operator_name(Variant::Operator p_op);
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptOperator();
 };
@@ -258,7 +266,8 @@ public:
 	void set_typed(Variant::Type p_op);
 	Variant::Type get_typed() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptSelect();
 };
@@ -290,7 +299,8 @@ public:
 	void set_variable(StringName p_variable);
 	StringName get_variable() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptVariableGet();
 };
@@ -322,7 +332,8 @@ public:
 	void set_variable(StringName p_variable);
 	StringName get_variable() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptVariableSet();
 };
@@ -358,7 +369,8 @@ public:
 	void set_constant_value(Variant p_value);
 	Variant get_constant_value() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptConstant();
 };
@@ -389,7 +401,8 @@ public:
 	void set_preload(const Ref<Resource> &p_preload);
 	Ref<Resource> get_preload() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptPreload();
 };
@@ -412,7 +425,8 @@ public:
 	virtual String get_caption() const override;
 	virtual String get_category() const override { return "operators"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptIndexGet();
 };
@@ -435,7 +449,8 @@ public:
 	virtual String get_caption() const override;
 	virtual String get_category() const override { return "operators"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptIndexSet();
 };
@@ -465,7 +480,8 @@ public:
 	void set_global_constant(int p_which);
 	int get_global_constant();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptGlobalConstant();
 };
@@ -501,7 +517,8 @@ public:
 	void set_base_type(const StringName &p_which);
 	StringName get_base_type();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptClassConstant();
 };
@@ -538,7 +555,8 @@ public:
 	void set_basic_type(Variant::Type p_which);
 	Variant::Type get_basic_type() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptBasicTypeConstant();
 };
@@ -585,7 +603,8 @@ public:
 	void set_math_constant(MathConstant p_which);
 	MathConstant get_math_constant();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptMathConstant();
 };
@@ -620,9 +639,11 @@ public:
 	void set_singleton(const String &p_string);
 	String get_singleton();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
-	virtual TypeGuess guess_output_type(TypeGuess *p_inputs, int p_output) const override;
+	virtual TypeGuess guess_output_type(TypeGuess *p_inputs,
+			int p_output) const override;
 
 	VisualScriptEngineSingleton();
 };
@@ -654,9 +675,11 @@ public:
 	void set_node_path(const NodePath &p_path);
 	NodePath get_node_path();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
-	virtual TypeGuess guess_output_type(TypeGuess *p_inputs, int p_output) const override;
+	virtual TypeGuess guess_output_type(TypeGuess *p_inputs,
+			int p_output) const override;
 
 	VisualScriptSceneNode();
 };
@@ -683,9 +706,11 @@ public:
 	virtual String get_caption() const override;
 	virtual String get_category() const override { return "data"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
-	virtual TypeGuess guess_output_type(TypeGuess *p_inputs, int p_output) const override;
+	virtual TypeGuess guess_output_type(TypeGuess *p_inputs,
+			int p_output) const override;
 
 	VisualScriptSceneTree();
 };
@@ -716,7 +741,8 @@ public:
 	void set_resource_path(const String &p_path);
 	String get_resource_path();
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptResourcePath();
 };
@@ -742,9 +768,11 @@ public:
 	virtual String get_caption() const override;
 	virtual String get_category() const override { return "data"; }
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
-	virtual TypeGuess guess_output_type(TypeGuess *p_inputs, int p_output) const override;
+	virtual TypeGuess guess_output_type(TypeGuess *p_inputs,
+			int p_output) const override;
 
 	VisualScriptSelf();
 };
@@ -780,20 +808,22 @@ protected:
 	GDVIRTUAL4RC(Variant, _step, Array, Array, int, Array)
 
 public:
-	enum StartMode { //replicated for step
+	enum StartMode { // replicated for step
 		START_MODE_BEGIN_SEQUENCE,
 		START_MODE_CONTINUE_SEQUENCE,
 		START_MODE_RESUME_YIELD
 	};
 
-	enum { //replicated for step
+	enum { // replicated for step
 		STEP_SHIFT = 1 << 24,
 		STEP_MASK = STEP_SHIFT - 1,
-		STEP_PUSH_STACK_BIT = STEP_SHIFT, //push bit to stack
-		STEP_GO_BACK_BIT = STEP_SHIFT << 1, //go back to previous node
-		STEP_NO_ADVANCE_BIT = STEP_SHIFT << 2, //do not advance past this node
-		STEP_EXIT_FUNCTION_BIT = STEP_SHIFT << 3, //return from function
-		STEP_YIELD_BIT = STEP_SHIFT << 4, //yield (will find VisualScriptFunctionState state in first working memory)
+		STEP_PUSH_STACK_BIT = STEP_SHIFT, // push bit to stack
+		STEP_GO_BACK_BIT = STEP_SHIFT << 1, // go back to previous node
+		STEP_NO_ADVANCE_BIT = STEP_SHIFT << 2, // do not advance past this node
+		STEP_EXIT_FUNCTION_BIT = STEP_SHIFT << 3, // return from function
+		STEP_YIELD_BIT = STEP_SHIFT
+				<< 4, // yield (will find VisualScriptFunctionState state
+					  // in first working memory)
 	};
 
 	virtual int get_output_sequence_port_count() const override;
@@ -811,9 +841,11 @@ public:
 	virtual String get_text() const override;
 	virtual String get_category() const override;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
-	virtual TypeGuess guess_output_type(TypeGuess *p_inputs, int p_output) const override;
+	virtual TypeGuess guess_output_type(TypeGuess *p_inputs,
+			int p_output) const override;
 
 	void _script_changed();
 
@@ -844,49 +876,10 @@ public:
 	virtual String get_text() const override;
 	virtual String get_category() const override;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptSubCall();
-};
-
-class VisualScriptComment : public VisualScriptNode {
-	GDCLASS(VisualScriptComment, VisualScriptNode);
-
-	String title;
-	String description;
-	Size2 size;
-
-protected:
-	static void _bind_methods();
-
-public:
-	virtual int get_output_sequence_port_count() const override;
-	virtual bool has_input_sequence_port() const override;
-
-	virtual String get_output_sequence_port_text(int p_port) const override;
-
-	virtual int get_input_value_port_count() const override;
-	virtual int get_output_value_port_count() const override;
-
-	virtual PropertyInfo get_input_value_port_info(int p_idx) const override;
-	virtual PropertyInfo get_output_value_port_info(int p_idx) const override;
-
-	virtual String get_caption() const override;
-	virtual String get_text() const override;
-	virtual String get_category() const override;
-
-	void set_title(const String &p_title);
-	String get_title() const;
-
-	void set_description(const String &p_description);
-	String get_description() const;
-
-	void set_size(const Size2 &p_size);
-	Size2 get_size() const;
-
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
-
-	VisualScriptComment();
 };
 
 class VisualScriptConstructor : public VisualScriptNode {
@@ -919,7 +912,8 @@ public:
 	void set_constructor(const Dictionary &p_info);
 	Dictionary get_constructor() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptConstructor();
 };
@@ -954,7 +948,8 @@ public:
 	void set_var_type(Variant::Type p_type);
 	Variant::Type get_var_type() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptLocalVar();
 };
@@ -990,7 +985,8 @@ public:
 	void set_var_type(Variant::Type p_type);
 	Variant::Type get_var_type() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptLocalVarSet();
 };
@@ -1035,7 +1031,8 @@ public:
 	void set_action_mode(Mode p_mode);
 	Mode get_action_mode() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptInputAction();
 };
@@ -1081,7 +1078,8 @@ public:
 	void set_deconstruct_type(Variant::Type p_type);
 	Variant::Type get_deconstruct_type() const;
 
-	virtual VisualScriptNodeInstance *instantiate(VisualScriptInstance *p_instance) override;
+	virtual VisualScriptNodeInstance *
+	instantiate(VisualScriptInstance *p_instance) override;
 
 	VisualScriptDeconstruct();
 };

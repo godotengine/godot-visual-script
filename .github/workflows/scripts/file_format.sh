@@ -46,9 +46,9 @@ while IFS= read -rd '' f; do
         continue
     fi
     # Disallow empty lines after the opening brace.
-    sed -z -i 's/\x7B\x0A\x0A/\x7B\x0A/g' "$f"
+    perl -i -0777 -pe 's/\x7B\x0A\x0A/\x7B\x0A/g' "$f"
     # Disallow some empty lines before the closing brace.
-    sed -z -i 's/\x0A\x0A\x7D/\x0A\x7D/g' "$f"
+    perl -i -0777 -pe 's/\x0A\x0A\x7D/\x0A\x7D/g' "$f"
 done
 
 git diff > patch.patch
@@ -66,4 +66,5 @@ printf "and the formatting rules:\n\n"
 cat patch.patch
 printf "\n*** Aborting, please fix your commit(s) with 'git commit --amend' or 'git rebase -i <hash>'\n"
 rm -f patch.patch
+
 exit 1

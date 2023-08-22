@@ -1,32 +1,32 @@
-/*************************************************************************/
-/*  visual_script_editor.h                                               */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  visual_script_editor.h                                                */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #ifndef VISUAL_SCRIPT_EDITOR_H
 #define VISUAL_SCRIPT_EDITOR_H
@@ -35,6 +35,7 @@
 #include "editor/create_dialog.h"
 #include "editor/editor_inspector.h"
 #include "editor/plugins/script_editor_plugin.h"
+#include "scene/resources/style_box_flat.h"
 #include "visual_script_property_selector.h"
 
 class GraphEdit;
@@ -131,7 +132,7 @@ class VisualScriptEditor : public ScriptEditorBase {
 	EditorProperty *default_property_editor = nullptr;
 	Ref<VisualScriptEditedProperty> edited_default_property_holder;
 
-	Ref<EditorUndoRedoManager> undo_redo;
+	EditorUndoRedoManager *undo_redo = nullptr;
 	Tree *members = nullptr;
 	AcceptDialog *function_name_edit = nullptr;
 	LineEdit *function_name_box = nullptr;
@@ -183,10 +184,10 @@ class VisualScriptEditor : public ScriptEditorBase {
 
 	PopupMenu *popup_menu = nullptr;
 	PopupMenu *member_popup = nullptr;
-	MemberType member_type;
+	MemberType member_type{};
 	String member_name;
 
-	PortAction port_action;
+	PortAction port_action{};
 	int port_action_node = 0;
 	int port_action_output = 0;
 	Vector2 port_action_pos;
@@ -291,11 +292,9 @@ class VisualScriptEditor : public ScriptEditorBase {
 	void _on_nodes_delete();
 	void _on_nodes_duplicate();
 
-	Variant get_drag_data_fw(const Point2 &p_point, Control *p_from);
-	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data,
-			Control *p_from) const;
-	void drop_data_fw(const Point2 &p_point, const Variant &p_data,
-			Control *p_from);
+	Variant get_drag_data_fw(const Point2 &p_point);
+	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;
+	void drop_data_fw(const Point2 &p_point, const Variant &p_data);
 
 	int editing_id = 0;
 	int editing_input = 0;
@@ -303,6 +302,8 @@ class VisualScriptEditor : public ScriptEditorBase {
 	bool can_swap = false;
 	int data_disconnect_node = 0;
 	int data_disconnect_port = 0;
+
+	String current_base_type;
 
 	void _default_value_changed(const StringName &p_property,
 			const Variant &p_value, const String &p_field,
@@ -329,6 +330,10 @@ class VisualScriptEditor : public ScriptEditorBase {
 
 	void _toggle_scripts_pressed();
 
+	void _set_base_type_and_script(Ref<VisualScriptNode> &node,
+			const String &base_type,
+			const String &base_script);
+
 protected:
 	void _notification(int p_what);
 	static void _bind_methods();
@@ -339,6 +344,7 @@ public:
 	virtual void
 	set_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) override;
 
+	virtual void convert_indent() override;
 	virtual void apply_code() override;
 	virtual Ref<Resource> get_edited_resource() const override;
 	virtual void set_edited_resource(const Ref<Resource> &p_res) override;
@@ -355,8 +361,6 @@ public:
 	virtual void clear_executing_line() override;
 	virtual void trim_trailing_whitespace() override;
 	virtual void insert_final_newline() override;
-	virtual void convert_indent_to_spaces() override;
-	virtual void convert_indent_to_tabs() override;
 	virtual void ensure_focus() override;
 	virtual void tag_saved_version() override;
 	virtual void reload(bool p_soft) override;

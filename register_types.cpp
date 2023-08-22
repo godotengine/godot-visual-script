@@ -1,39 +1,38 @@
-/*************************************************************************/
-/*  register_types.cpp                                                   */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  register_types.cpp                                                    */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #include "register_types.h"
 
 #include "core/config/engine.h"
 #include "core/io/resource_loader.h"
 #include "visual_script.h"
-#include "visual_script_builtin_funcs.h"
 #include "visual_script_expression.h"
 #include "visual_script_flow_control.h"
 #include "visual_script_func_nodes.h"
@@ -50,7 +49,7 @@ static VisualScriptCustomNodes *vs_custom_nodes_singleton = nullptr;
 void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		visual_script_language = memnew(VisualScriptLanguage);
-		//script_language_gd->init();
+		// script_language_gd->init();
 		ScriptServer::register_language(visual_script_language);
 
 		GDREGISTER_CLASS(VisualScript);
@@ -76,7 +75,6 @@ void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(VisualScriptSelf);
 		GDREGISTER_CLASS(VisualScriptCustomNode);
 		GDREGISTER_CLASS(VisualScriptSubCall);
-		GDREGISTER_CLASS(VisualScriptComment);
 		GDREGISTER_CLASS(VisualScriptConstructor);
 		GDREGISTER_CLASS(VisualScriptLocalVar);
 		GDREGISTER_CLASS(VisualScriptLocalVarSet);
@@ -88,7 +86,6 @@ void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(VisualScriptFunctionCall);
 		GDREGISTER_CLASS(VisualScriptPropertySet);
 		GDREGISTER_CLASS(VisualScriptPropertyGet);
-		//ClassDB::register_type<VisualScriptScriptCall>();
 		GDREGISTER_CLASS(VisualScriptEmitSignal);
 
 		GDREGISTER_CLASS(VisualScriptReturn);
@@ -96,20 +93,16 @@ void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(VisualScriptWhile);
 		GDREGISTER_CLASS(VisualScriptIterator);
 		GDREGISTER_CLASS(VisualScriptSequence);
-		//GDREGISTER_CLASS(VisualScriptInputFilter);
 		GDREGISTER_CLASS(VisualScriptSwitch);
 		GDREGISTER_CLASS(VisualScriptSelect);
 
 		GDREGISTER_CLASS(VisualScriptYield);
 		GDREGISTER_CLASS(VisualScriptYieldSignal);
 
-		GDREGISTER_CLASS(VisualScriptBuiltinFunc);
-
 		GDREGISTER_CLASS(VisualScriptExpression);
 
 		register_visual_script_nodes();
 		register_visual_script_func_nodes();
-		register_visual_script_builtin_func_node();
 		register_visual_script_flow_control_nodes();
 		register_visual_script_yield_nodes();
 		register_visual_script_expression_node();
@@ -121,7 +114,8 @@ void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(VisualScriptCustomNodes);
 		ClassDB::set_current_api(ClassDB::API_CORE);
 		vs_custom_nodes_singleton = memnew(VisualScriptCustomNodes);
-		Engine::get_singleton()->add_singleton(Engine::Singleton("VisualScriptCustomNodes", VisualScriptCustomNodes::get_singleton()));
+		Engine::get_singleton()->add_singleton(Engine::Singleton(
+				"VisualScriptCustomNodes", VisualScriptCustomNodes::get_singleton()));
 
 		VisualScriptEditor::register_editor();
 	}
