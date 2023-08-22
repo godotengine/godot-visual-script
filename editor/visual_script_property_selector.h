@@ -129,26 +129,13 @@ protected:
 	static void _bind_methods();
 
 public:
-	void select_from_visual_script(
-			const Ref<Script> &p_script);
-
-	void select_method_from_base_type(const String &p_base,
-			const bool p_virtuals_only = false,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_base_type(const String &p_base,
-			const String &p_base_script = "",
-			bool p_virtuals_only = false,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_script(const Ref<Script> &p_script,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_basic_type(Variant::Type p_type,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_instance(Object *p_instance, const bool p_connecting = true,
-			bool clear_text = true);
+	void select_method_from_base_type(const String &p_base, const bool p_virtuals_only = false, const bool p_connecting = true, bool clear_text = true);
+	void select_from_base_type(const String &p_base, const String &p_base_script = "", bool p_virtuals_only = false, const bool p_connecting = true, bool clear_text = true);
+	void select_from_script(const Ref<Script> &p_script, const bool p_connecting = true, bool clear_text = true);
+	void select_from_basic_type(Variant::Type p_type, const bool p_connecting = true, bool clear_text = true);
+	void select_from_action(const String &p_type, const bool p_connecting = true, bool clear_text = true);
+	void select_from_instance(Object *p_instance, const bool p_connecting = true, bool clear_text = true);
+	void select_from_visual_script(const Ref<Script> &p_script, bool clear_text = true);
 
 	void show_window(float p_screen_ratio);
 
@@ -184,8 +171,7 @@ class VisualScriptPropertySelector::SearchRunner : public RefCounted {
 		Vector<DocData::ThemeItemDoc *> theme_properties;
 
 		bool required() {
-			return name || methods.size() || signals.size() || constants.size() ||
-					properties.size() || theme_properties.size();
+			return name || methods.size() || signals.size() || constants.size() || properties.size() || theme_properties.size();
 		}
 	};
 
@@ -232,36 +218,18 @@ class VisualScriptPropertySelector::SearchRunner : public RefCounted {
 	void _add_class_doc(String class_name, String inherits, String category);
 	DocData::MethodDoc _get_method_doc(MethodInfo method_info);
 	TreeItem *_create_class_hierarchy(const ClassMatch &p_match);
-	TreeItem *_create_class_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_doc, bool p_gray);
-	TreeItem *_create_method_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_class_doc,
-			const String &p_text,
-			const DocData::MethodDoc *p_doc);
-	TreeItem *_create_signal_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_class_doc,
-			const DocData::MethodDoc *p_doc);
-	TreeItem *_create_constant_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_class_doc,
-			const DocData::ConstantDoc *p_doc);
-	TreeItem *_create_property_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_class_doc,
-			const DocData::PropertyDoc *p_doc);
-	TreeItem *_create_theme_property_item(TreeItem *p_parent,
-			const DocData::ClassDoc *p_class_doc,
-			const DocData::ThemeItemDoc *p_doc);
-	TreeItem *_create_member_item(TreeItem *p_parent, const String &p_class_name,
-			const String &p_icon, const String &p_name,
-			const String &p_text, const String &p_type,
-			const String &p_metatype,
-			const String &p_tooltip,
-			const String &p_description);
+	TreeItem *_create_class_item(TreeItem *p_parent, const DocData::ClassDoc *p_doc, bool p_gray);
+	TreeItem *_create_method_item(TreeItem *p_parent, const DocData::ClassDoc *p_class_doc, const String &p_text, const DocData::MethodDoc *p_doc);
+	TreeItem *_create_signal_item(TreeItem *p_parent, const DocData::ClassDoc *p_class_doc, const DocData::MethodDoc *p_doc);
+	TreeItem *_create_constant_item(TreeItem *p_parent, const DocData::ClassDoc *p_class_doc, const DocData::ConstantDoc *p_doc);
+	TreeItem *_create_property_item(TreeItem *p_parent, const DocData::ClassDoc *p_class_doc, const DocData::PropertyDoc *p_doc);
+	TreeItem *_create_theme_property_item(TreeItem *p_parent, const DocData::ClassDoc *p_class_doc, const DocData::ThemeItemDoc *p_doc);
+	TreeItem *_create_member_item(TreeItem *p_parent, const String &p_class_name, const String &p_icon, const String &p_name, const String &p_text, const String &p_type, const String &p_metatype, const String &p_tooltip, const String &p_description);
 
 public:
 	bool work(uint64_t slot = 100000);
 
-	SearchRunner(VisualScriptPropertySelector *p_selector_ui,
-			Tree *p_results_tree);
+	SearchRunner(VisualScriptPropertySelector *p_selector_ui, Tree *p_results_tree);
 };
 
 #endif // VISUAL_SCRIPT_PROPERTY_SELECTOR_H
