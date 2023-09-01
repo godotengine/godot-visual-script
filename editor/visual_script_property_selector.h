@@ -129,30 +129,29 @@ protected:
 	static void _bind_methods();
 
 public:
-	void select_from_visual_script(
-			const Ref<Script> &p_script);
+  void select_method_from_base_type(const String &p_base,
+                                    const bool p_virtuals_only = false,
+                                    const bool p_connecting = true,
+                                    bool clear_text = true);
+  void select_from_base_type(const String &p_base,
+                             const String &p_base_script = "",
+                             bool p_virtuals_only = false,
+                             const bool p_connecting = true,
+                             bool clear_text = true);
+  void select_from_script(const Ref<Script> &p_script,
+                          const bool p_connecting = true,
+                          bool clear_text = true);
+  void select_from_basic_type(Variant::Type p_type,
+                              const bool p_connecting = true,
+                              bool clear_text = true);
+  void select_from_instance(Object *p_instance, const bool p_connecting = true,
+                            bool clear_text = true);
+  void select_from_visual_script(const Ref<Script> &p_script,
+                                 bool clear_text = true);
 
-	void select_method_from_base_type(const String &p_base,
-			const bool p_virtuals_only = false,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_base_type(const String &p_base,
-			const String &p_base_script = "",
-			bool p_virtuals_only = false,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_script(const Ref<Script> &p_script,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_basic_type(Variant::Type p_type,
-			const bool p_connecting = true,
-			bool clear_text = true);
-	void select_from_instance(Object *p_instance, const bool p_connecting = true,
-			bool clear_text = true);
+  void show_window(float p_screen_ratio);
 
-	void show_window(float p_screen_ratio);
-
-	VisualScriptPropertySelector();
+  VisualScriptPropertySelector();
 };
 
 class VisualScriptPropertySelector::SearchRunner : public RefCounted {
