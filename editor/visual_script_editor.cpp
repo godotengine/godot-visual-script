@@ -2444,7 +2444,8 @@ bool VisualScriptEditor::can_drop_data_fw(const Point2 &p_point,
 					String(d["type"]) == "visual_script_variable_drag" ||
 					String(d["type"]) == "visual_script_signal_drag" ||
 					String(d["type"]) == "obj_property" ||
-					String(d["type"]) == "resource" || String(d["type"]) == "files" ||
+					String(d["type"]) == "resource" || 
+					String(d["type"]) == "files" ||
 					String(d["type"]) == "nodes")) {
 		if (String(d["type"]) == "obj_property") {
 #ifdef MACOS_ENABLED
@@ -3645,16 +3646,16 @@ void VisualScriptEditor::connect_data(Ref<VisualScriptNode> vnode_old,
 void VisualScriptEditor::_selected_connect_node(const String &p_text,
 		const String &p_category,
 		const bool p_connecting) {
-	bool held_ctrl = Input::get_singleton()->is_key_pressed(
-#ifdef MACOS_ENABLED
-			Key::META
-#else
-			Key::CTRL
-#endif
-	);
-	RBSet<int> vn;
 
+#ifdef MACOS_ENABLED
+			bool held_ctrl = Input::get_singleton()->is_key_pressed(Key::META);
+#else
+			bool held_ctrl = Input::get_singleton()->is_key_pressed(Key::CTRL);
+#endif
 	Vector2 pos = _get_pos_in_graph(port_action_pos);
+
+	RBSet<int> vn;
+	bool port_node_exists = true;
 
 	if (drop_position != Vector2()) {
 		pos = drop_position;
@@ -3663,8 +3664,7 @@ void VisualScriptEditor::_selected_connect_node(const String &p_text,
 
 	Ref<VisualScriptNode> vnode;
 	Ref<VisualScriptNode> vnode_old;
-	bool port_node_exists = script->has_node(port_action_node);
-	if (port_node_exists && p_connecting) {
+		if (port_node_exists && p_connecting) {
 		vnode_old = script->get_node(port_action_node);
 	}
 
