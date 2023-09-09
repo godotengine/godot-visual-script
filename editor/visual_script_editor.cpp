@@ -4379,7 +4379,7 @@ void VisualScriptEditor::_notification(int p_what) {
 			func_input_scroll->add_theme_style_override(
 					"bg", get_theme_stylebox(SNAME("bg"), SNAME("Tree")));
 
-			Ref<Theme> tm = EditorNode::get_singleton()->get_theme_base()->get_theme();
+			Ref<Theme> tm = EditorNode::get_singleton()-> get_editor_theme();
 
 			bool dark_theme = tm->get_constant("dark_theme", "Editor");
 
