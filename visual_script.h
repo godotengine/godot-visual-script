@@ -447,10 +447,10 @@ class VisualScriptInstance : public ScriptInstance {
 	friend class VisualScriptFunctionState; // For yield.
 	friend class VisualScriptLanguage; // For debugger.
 public:
-    virtual void validate_property(PropertyInfo &p_property) const {
-    }
-    virtual void notification(int p_notification, bool p_reversed = false) {
-    }
+	virtual void validate_property(PropertyInfo &p_property) const {
+	}
+	virtual void notification(int p_notification, bool p_reversed = false) {
+	}
 	virtual bool set(const StringName &p_name, const Variant &p_value);
 	virtual bool get(const StringName &p_name, Variant &r_ret) const;
 	virtual void get_property_list(List<PropertyInfo> *p_properties) const;
