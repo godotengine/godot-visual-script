@@ -2746,3 +2746,7 @@ VisualScriptLanguage::~VisualScriptLanguage() {
 }
 
 StringName VisualScript::get_global_name() const { return get_name(); }
+
+String VisualScript::get_class_icon_path() const {
+	return "icons/VisualScript.svg";
+}
