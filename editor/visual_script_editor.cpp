@@ -751,11 +751,6 @@ void VisualScriptEditor::_update_graph(int p_only_id) {
 		GraphNode *gnode = memnew(GraphNode);
 		gnode->set_title(node->get_caption());
 		gnode->set_position_offset(pos * EDSCALE);
-		if (error_line == E) {
-			gnode->set_overlay(GraphNode::OVERLAY_POSITION);
-		} else if (node->is_breakpoint()) {
-			gnode->set_overlay(GraphNode::OVERLAY_BREAKPOINT);
-		}
 
 		gnode->set_meta("__vnode", node);
 		gnode->set_name(itos(E));
@@ -764,14 +759,6 @@ void VisualScriptEditor::_update_graph(int p_only_id) {
 		gnode->connect("close_request",
 				callable_mp(this, &VisualScriptEditor::_remove_node).bind(E),
 				CONNECT_DEFERRED);
-
-		{
-			Ref<VisualScriptFunction> v = node;
-			if (!v.is_valid()) {
-				gnode->set_show_close_button(true);
-			}
-		}
-
 		bool has_gnode_text = false;
 
 		Ref<VisualScriptLists> nd_list = node;
@@ -2116,7 +2103,7 @@ void VisualScriptEditor::_on_nodes_delete() {
 	for (int i = 0; i < graph->get_child_count(); i++) {
 		GraphNode *gn = Object::cast_to<GraphNode>(graph->get_child(i));
 		if (gn) {
-			if (gn->is_selected() && gn->is_close_button_visible()) {
+			if (gn->is_selected()) {
 				to_erase.push_back(gn->get_name().operator String().to_int());
 			}
 		}
@@ -2168,7 +2155,7 @@ void VisualScriptEditor::_on_nodes_duplicate() {
 	for (int i = 0; i < graph->get_child_count(); i++) {
 		GraphNode *gn = Object::cast_to<GraphNode>(graph->get_child(i));
 		if (gn) {
-			if (gn->is_selected() && gn->is_close_button_visible()) {
+			if (gn->is_selected()) {
 				int id = gn->get_name().operator String().to_int();
 				to_duplicate.insert(id);
 			}

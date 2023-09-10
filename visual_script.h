@@ -370,7 +370,7 @@ public:
 	virtual void set_source_code(const String &p_code) override;
 	virtual Error reload(bool p_keep_state = false) override;
 
-	virtual String get_class_icon_path() const;
+	virtual String get_class_icon_path() const override;
 #ifdef TOOLS_ENABLED
 	virtual Vector<DocData::ClassDoc> get_documentation() const override {
 		Vector<DocData::ClassDoc> docs;
