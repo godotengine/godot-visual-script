@@ -370,7 +370,7 @@ public:
 	virtual void set_source_code(const String &p_code) override;
 	virtual Error reload(bool p_keep_state = false) override;
 
-	virtual String get_class_icon_path() const;
+	virtual String get_class_icon_path() const override;
 #ifdef TOOLS_ENABLED
 	virtual Vector<DocData::ClassDoc> get_documentation() const override {
 		Vector<DocData::ClassDoc> docs;
@@ -447,7 +447,11 @@ class VisualScriptInstance : public ScriptInstance {
 	friend class VisualScriptFunctionState; // For yield.
 	friend class VisualScriptLanguage; // For debugger.
 public:
-    	virtual bool set(const StringName &p_name, const Variant &p_value);
+	virtual void validate_property(PropertyInfo &p_property) const {
+	}
+	virtual void notification(int p_notification, bool p_reversed = false) {
+	}
+	virtual bool set(const StringName &p_name, const Variant &p_value);
 	virtual bool get(const StringName &p_name, Variant &r_ret) const;
 	virtual void get_property_list(List<PropertyInfo> *p_properties) const;
 	virtual Variant::Type get_property_type(const StringName &p_name,
@@ -467,7 +471,6 @@ public:
 			int p_argcount, Callable::CallError &r_error);
 	virtual void notification(int p_notification);
 	String to_string(bool *r_valid);
-
 	bool set_variable(const StringName &p_variable, const Variant &p_value) {
 		HashMap<StringName, Variant>::Iterator E = variables.find(p_variable);
 		if (!E) {

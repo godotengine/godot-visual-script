@@ -751,11 +751,6 @@ void VisualScriptEditor::_update_graph(int p_only_id) {
 		GraphNode *gnode = memnew(GraphNode);
 		gnode->set_title(node->get_caption());
 		gnode->set_position_offset(pos * EDSCALE);
-		if (error_line == E) {
-			gnode->set_overlay(GraphNode::OVERLAY_POSITION);
-		} else if (node->is_breakpoint()) {
-			gnode->set_overlay(GraphNode::OVERLAY_BREAKPOINT);
-		}
 
 		gnode->set_meta("__vnode", node);
 		gnode->set_name(itos(E));
@@ -764,14 +759,6 @@ void VisualScriptEditor::_update_graph(int p_only_id) {
 		gnode->connect("close_request",
 				callable_mp(this, &VisualScriptEditor::_remove_node).bind(E),
 				CONNECT_DEFERRED);
-
-		{
-			Ref<VisualScriptFunction> v = node;
-			if (!v.is_valid()) {
-				gnode->set_show_close_button(true);
-			}
-		}
-
 		bool has_gnode_text = false;
 
 		Ref<VisualScriptLists> nd_list = node;
@@ -2116,7 +2103,7 @@ void VisualScriptEditor::_on_nodes_delete() {
 	for (int i = 0; i < graph->get_child_count(); i++) {
 		GraphNode *gn = Object::cast_to<GraphNode>(graph->get_child(i));
 		if (gn) {
-			if (gn->is_selected() && gn->is_close_button_visible()) {
+			if (gn->is_selected()) {
 				to_erase.push_back(gn->get_name().operator String().to_int());
 			}
 		}
@@ -2168,7 +2155,7 @@ void VisualScriptEditor::_on_nodes_duplicate() {
 	for (int i = 0; i < graph->get_child_count(); i++) {
 		GraphNode *gn = Object::cast_to<GraphNode>(graph->get_child(i));
 		if (gn) {
-			if (gn->is_selected() && gn->is_close_button_visible()) {
+			if (gn->is_selected()) {
 				int id = gn->get_name().operator String().to_int();
 				to_duplicate.insert(id);
 			}
@@ -2444,8 +2431,7 @@ bool VisualScriptEditor::can_drop_data_fw(const Point2 &p_point,
 					String(d["type"]) == "visual_script_variable_drag" ||
 					String(d["type"]) == "visual_script_signal_drag" ||
 					String(d["type"]) == "obj_property" ||
-					String(d["type"]) == "resource" || 
-					String(d["type"]) == "files" ||
+					String(d["type"]) == "resource" || String(d["type"]) == "files" ||
 					String(d["type"]) == "nodes")) {
 		if (String(d["type"]) == "obj_property") {
 #ifdef MACOS_ENABLED
@@ -3646,16 +3632,16 @@ void VisualScriptEditor::connect_data(Ref<VisualScriptNode> vnode_old,
 void VisualScriptEditor::_selected_connect_node(const String &p_text,
 		const String &p_category,
 		const bool p_connecting) {
-
+	bool held_ctrl = Input::get_singleton()->is_key_pressed(
 #ifdef MACOS_ENABLED
-			bool held_ctrl = Input::get_singleton()->is_key_pressed(Key::META);
+			Key::META
 #else
-			bool held_ctrl = Input::get_singleton()->is_key_pressed(Key::CTRL);
+			Key::CTRL
 #endif
-	Vector2 pos = _get_pos_in_graph(port_action_pos);
-
+	);
 	RBSet<int> vn;
-	bool port_node_exists = true;
+
+	Vector2 pos = _get_pos_in_graph(port_action_pos);
 
 	if (drop_position != Vector2()) {
 		pos = drop_position;
@@ -3664,7 +3650,8 @@ void VisualScriptEditor::_selected_connect_node(const String &p_text,
 
 	Ref<VisualScriptNode> vnode;
 	Ref<VisualScriptNode> vnode_old;
-		if (port_node_exists && p_connecting) {
+	bool port_node_exists = true;
+	if (port_node_exists && p_connecting) {
 		vnode_old = script->get_node(port_action_node);
 	}
 
@@ -4379,7 +4366,7 @@ void VisualScriptEditor::_notification(int p_what) {
 			func_input_scroll->add_theme_style_override(
 					"bg", get_theme_stylebox(SNAME("bg"), SNAME("Tree")));
 
-			Ref<Theme> tm = EditorNode::get_singleton()-> get_editor_theme();
+			Ref<Theme> tm = EditorNode::get_singleton()->get_editor_theme();
 
 			bool dark_theme = tm->get_constant("dark_theme", "Editor");
 
