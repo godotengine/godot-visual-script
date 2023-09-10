@@ -1,43 +1,45 @@
-/*************************************************************************/
-/*  visual_script_property_selector.cpp                                  */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                      https://godotengine.org                          */
-/*************************************************************************/
-/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
+/**************************************************************************/
+/*  visual_script_property_selector.cpp                                   */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #include "visual_script_property_selector.h"
 
 #include "../visual_script.h"
-#include "../visual_script_builtin_funcs.h"
 #include "../visual_script_flow_control.h"
 #include "../visual_script_func_nodes.h"
 #include "../visual_script_nodes.h"
+#include "core/object/script_language.h"
 #include "core/os/keyboard.h"
+#include "core/string/string_name.h"
 #include "editor/doc_tools.h"
 #include "editor/editor_feature_profile.h"
+#include "editor/editor_node.h"
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
 #include "scene/main/node.h"
@@ -157,7 +159,7 @@ void VisualScriptPropertySelector::select_method_from_base_type(const String &p_
 			search_box->set_text("._"); // show all _methods
 			search_box->set_caret_column(2);
 		} else {
-			search_box->set_text("."); // show all methods
+			search_box->set_text("."); // show all methods.
 			search_box->set_caret_column(1);
 		}
 	}
@@ -176,14 +178,46 @@ void VisualScriptPropertySelector::select_method_from_base_type(const String &p_
 	results_tree->clear();
 	show_window(.5f);
 	search_box->grab_focus();
+	_update_results();
+}
 
+void VisualScriptPropertySelector::select_from_visual_script(const Ref<Script> &p_script, bool clear_text) {
+	set_title(TTR("Select from visual script"));
+	base_type = p_script->get_instance_base_type();
+	if (p_script == nullptr) {
+		base_script = "";
+	} else {
+		base_script = p_script->get_path().trim_prefix("res://").quote();
+	}
+	type = Variant::NIL;
+	connecting = false;
+
+	if (clear_text) {
+		search_box->set_text("");
+	}
+	search_box->select_all();
+
+	search_visual_script_nodes->set_pressed(true);
+	search_classes->set_pressed(false);
+	search_methods->set_pressed(true);
+	search_operators->set_pressed(false);
+	search_signals->set_pressed(true);
+	search_constants->set_pressed(true);
+	search_properties->set_pressed(true);
+	search_theme_items->set_pressed(false);
+
+	scope_combo->select(COMBO_BASE);
+
+	results_tree->clear();
+	show_window(.5f);
+	search_box->grab_focus();
 	_update_results();
 }
 
 void VisualScriptPropertySelector::select_from_base_type(const String &p_base, const String &p_base_script, bool p_virtuals_only, const bool p_connecting, bool clear_text) {
 	set_title(TTR("Select from base type"));
 	base_type = p_base;
-	base_script = p_base_script.trim_prefix("res://").quote(); // filepath to EditorHelp::get_doc_data().name
+	base_script = p_base_script.trim_prefix("res://").quote();
 	type = Variant::NIL;
 	connecting = p_connecting;
 
@@ -191,7 +225,7 @@ void VisualScriptPropertySelector::select_from_base_type(const String &p_base, c
 		if (p_virtuals_only) {
 			search_box->set_text("_");
 		} else {
-			search_box->set_text(" ");
+			search_box->set_text("");
 		}
 	}
 	search_box->select_all();
@@ -218,7 +252,7 @@ void VisualScriptPropertySelector::select_from_script(const Ref<Script> &p_scrip
 	ERR_FAIL_COND(p_script.is_null());
 
 	base_type = p_script->get_instance_base_type();
-	base_script = p_script->get_path().trim_prefix("res://").quote(); // filepath to EditorHelp::get_doc_data().name
+	base_script = p_script->get_path().trim_prefix("res://").quote();
 	type = Variant::NIL;
 	script = p_script->get_instance_id();
 	connecting = p_connecting;
@@ -254,7 +288,7 @@ void VisualScriptPropertySelector::select_from_basic_type(Variant::Type p_type, 
 	connecting = p_connecting;
 
 	if (clear_text) {
-		search_box->set_text(" ");
+		search_box->set_text("");
 	}
 	search_box->select_all();
 
@@ -272,36 +306,6 @@ void VisualScriptPropertySelector::select_from_basic_type(Variant::Type p_type, 
 	results_tree->clear();
 	show_window(.5f);
 	search_box->grab_focus();
-
-	_update_results();
-}
-
-void VisualScriptPropertySelector::select_from_action(const String &p_type, const bool p_connecting, bool clear_text) {
-	set_title(TTR("Select from action"));
-	base_type = p_type;
-	base_script = "";
-	type = Variant::NIL;
-	connecting = p_connecting;
-
-	if (clear_text) {
-		search_box->set_text("");
-	}
-	search_box->select_all();
-
-	search_visual_script_nodes->set_pressed(true);
-	search_classes->set_pressed(false);
-	search_methods->set_pressed(false);
-	search_operators->set_pressed(false);
-	search_signals->set_pressed(false);
-	search_constants->set_pressed(false);
-	search_properties->set_pressed(false);
-	search_theme_items->set_pressed(false);
-
-	scope_combo->select(COMBO_RELATED);
-
-	results_tree->clear();
-	show_window(.5f);
-	search_box->grab_focus();
 	_update_results();
 }
 
@@ -313,14 +317,14 @@ void VisualScriptPropertySelector::select_from_instance(Object *p_instance, cons
 	if (p_script == nullptr) {
 		base_script = "";
 	} else {
-		base_script = p_script->get_path().trim_prefix("res://").quote(); // filepath to EditorHelp::get_doc_data().name
+		base_script = p_script->get_path().trim_prefix("res://").quote();
 	}
 
 	type = Variant::NIL;
 	connecting = p_connecting;
 
 	if (clear_text) {
-		search_box->set_text(" ");
+		search_box->set_text("");
 	}
 	search_box->select_all();
 
@@ -341,38 +345,7 @@ void VisualScriptPropertySelector::select_from_instance(Object *p_instance, cons
 	_update_results();
 }
 
-void VisualScriptPropertySelector::select_from_visual_script(const Ref<Script> &p_script, bool clear_text) {
-	set_title(TTR("Select from visual script"));
-	base_type = p_script->get_instance_base_type();
-	if (p_script == nullptr) {
-		base_script = "";
-	} else {
-		base_script = p_script->get_path().trim_prefix("res://").quote(); // filepath to EditorHelp::get_doc_data().name
-	}
-	type = Variant::NIL;
-	connecting = false;
 
-	if (clear_text) {
-		search_box->set_text(" ");
-	}
-	search_box->select_all();
-
-	search_visual_script_nodes->set_pressed(true);
-	search_classes->set_pressed(false);
-	search_methods->set_pressed(true);
-	search_operators->set_pressed(false);
-	search_signals->set_pressed(true);
-	search_constants->set_pressed(true);
-	search_properties->set_pressed(true);
-	search_theme_items->set_pressed(false);
-
-	scope_combo->select(COMBO_BASE);
-
-	results_tree->clear();
-	show_window(.5f);
-	search_box->grab_focus();
-	_update_results();
-}
 
 void VisualScriptPropertySelector::show_window(float p_screen_ratio) {
 	popup_centered_ratio(p_screen_ratio);
@@ -591,9 +564,7 @@ bool VisualScriptPropertySelector::SearchRunner::_is_class_disabled_by_scope(con
 			return false;
 		}
 	}
-	//	if (scope_flags & SCOPE_RELATED) {
-	//		/* code */
-	//	}
+
 	if (scope_flags & SCOPE_UNRELATED) {
 		if (!is_base_script && !is_base && !is_inheriter) {
 			return false;
@@ -817,7 +788,6 @@ bool VisualScriptPropertySelector::SearchRunner::_phase_match_classes() {
 			} else {
 				class_doc.inherits = "";
 			}
-			class_doc.category = "VisualScriptCustomNode/" + vsn->get_category();
 			class_doc.brief_description = "";
 			class_doc.constructors.clear();
 			class_doc.methods.clear();
@@ -832,7 +802,6 @@ bool VisualScriptPropertySelector::SearchRunner::_phase_match_classes() {
 		matches[class_doc.name] = ClassMatch();
 		ClassMatch &match = matches[class_doc.name];
 
-		match.category = class_doc.category;
 		match.doc = &class_doc;
 		// Match class name.
 		if (search_flags & SEARCH_CLASSES || _match_visual_script(class_doc)) {
@@ -1015,41 +984,18 @@ bool VisualScriptPropertySelector::SearchRunner::_match_string(const String &p_t
 	}
 }
 
-bool VisualScriptPropertySelector::SearchRunner::_match_visual_script(DocData::ClassDoc &class_doc) {
-	if (class_doc.category.ends_with("_class")) {
-		if (class_doc.category.begins_with("VisualScript") && search_flags & SEARCH_CLASSES) {
-			if (matches.has(class_doc.inherits)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	if (class_doc.category.begins_with("VisualScript") && search_flags & SEARCH_VISUAL_SCRIPT_NODES) {
+bool VisualScriptPropertySelector::SearchRunner::_match_visual_script(
+		DocData::ClassDoc &class_doc) {
+	if (class_doc.name.begins_with("operators") &&
+			search_flags & SEARCH_OPERATORS) {
 		return true;
-	}
-	if (class_doc.name.begins_with("operators") && search_flags & SEARCH_OPERATORS) {
-		return true;
-	}
-	if (class_doc.category.begins_with("VisualScriptNode/deconstruct")) {
-		if (class_doc.name.find(selector_ui->base_type, 0) > -1) {
-			return true;
-		}
 	}
 
 	return false;
 }
 
-bool VisualScriptPropertySelector::SearchRunner::_match_is_hidden(DocData::ClassDoc &class_doc) {
-	if (class_doc.category.begins_with("VisualScript")) {
-		if (class_doc.name.begins_with("flow_control")) {
-			return false;
-		} else if (class_doc.name.begins_with("operators")) {
-			return !(search_flags & SEARCH_OPERATORS);
-		} else if (class_doc.name.begins_with("functions/built_in/print")) {
-			return false;
-		}
-		return true;
-	}
+bool VisualScriptPropertySelector::SearchRunner::_match_is_hidden(
+		DocData::ClassDoc &class_doc) {
 	return false;
 }
 
@@ -1071,11 +1017,11 @@ void VisualScriptPropertySelector::SearchRunner::_match_item(TreeItem *p_item, c
 	}
 }
 
-void VisualScriptPropertySelector::SearchRunner::_add_class_doc(String class_name, String inherits, String category) {
+void VisualScriptPropertySelector::SearchRunner::_add_class_doc(
+		String class_name, String inherits, String category) {
 	DocData::ClassDoc class_doc = DocData::ClassDoc();
 	class_doc.name = class_name;
 	class_doc.inherits = inherits;
-	class_doc.category = "VisualScriptNode/" + category;
 	class_doc.brief_description = category;
 	combined_docs.insert(class_doc.name, class_doc);
 }
@@ -1115,51 +1061,24 @@ TreeItem *VisualScriptPropertySelector::SearchRunner::_create_class_hierarchy(co
 	return class_item;
 }
 
-TreeItem *VisualScriptPropertySelector::SearchRunner::_create_class_item(TreeItem *p_parent, const DocData::ClassDoc *p_doc, bool p_gray) {
+TreeItem *VisualScriptPropertySelector::SearchRunner::_create_class_item(
+		TreeItem *p_parent, const DocData::ClassDoc *p_doc, bool p_gray) {
 	Ref<Texture2D> icon = empty_icon;
 	String text_0 = p_doc->name;
 	String text_1 = "Class";
 
 	String what = "Class";
 	String details = p_doc->name;
-	if (p_doc->category.begins_with("VisualScriptCustomNode/")) {
-		Vector<String> path = p_doc->name.split("/");
-		icon = ui_service->get_theme_icon(SNAME("VisualScript"), SNAME("EditorIcons"));
-		text_0 = path[path.size() - 1];
-		text_1 = "VisualScriptCustomNode";
-		what = "VisualScriptCustomNode";
-		details = "CustomNode";
-	} else if (p_doc->category.begins_with("VisualScriptNode/")) {
-		Vector<String> path = p_doc->name.split("/");
-		icon = ui_service->get_theme_icon(SNAME("VisualScript"), SNAME("EditorIcons"));
-		text_0 = path[path.size() - 1];
-		if (p_doc->category.begins_with("VisualScriptNode/deconstruct")) {
-			text_0 = "deconstruct " + text_0;
+	if (p_doc->name.is_quoted()) {
+		text_0 = p_doc->name.unquote().get_file();
+		if (ui_service->has_theme_icon(p_doc->inherits, "EditorIcons")) {
+			icon = ui_service->get_theme_icon(p_doc->inherits, "EditorIcons");
 		}
-		text_1 = "VisualScriptNode";
-		what = "VisualScriptNode";
-		details = p_doc->name;
-
-		if (path.size() == 1) {
-			if (path[0] == "functions" || path[0] == "operators") {
-				text_1 = "VisualScript";
-				p_gray = true;
-				what = "no_result";
-				details = "";
-			}
-		}
-
-	} else {
-		if (p_doc->name.is_quoted()) {
-			text_0 = p_doc->name.unquote().get_file();
-			if (ui_service->has_theme_icon(p_doc->inherits, "EditorIcons")) {
-				icon = ui_service->get_theme_icon(p_doc->inherits, "EditorIcons");
-			}
-		} else if (ui_service->has_theme_icon(p_doc->name, "EditorIcons")) {
-			icon = ui_service->get_theme_icon(p_doc->name, "EditorIcons");
-		} else if (ClassDB::class_exists(p_doc->name) && ClassDB::is_parent_class(p_doc->name, "Object")) {
-			icon = ui_service->get_theme_icon(SNAME("Object"), SNAME("EditorIcons"));
-		}
+	} else if (ui_service->has_theme_icon(p_doc->name, "EditorIcons")) {
+		icon = ui_service->get_theme_icon(p_doc->name, "EditorIcons");
+	} else if (ClassDB::class_exists(p_doc->name) &&
+			ClassDB::is_parent_class(p_doc->name, "Object")) {
+		icon = ui_service->get_theme_icon(SNAME("Object"), SNAME("EditorIcons"));
 	}
 	String tooltip = p_doc->brief_description.strip_edges();
 

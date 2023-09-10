@@ -11,7 +11,6 @@ def get_doc_classes():
         "VisualScriptBasicTypeConstant",
         "VisualScriptBuiltinFunc",
         "VisualScriptClassConstant",
-        "VisualScriptComment",
         "VisualScriptComposeArray",
         "VisualScriptCondition",
         "VisualScriptConstant",
