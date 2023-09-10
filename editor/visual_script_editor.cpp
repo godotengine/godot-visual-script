@@ -3650,7 +3650,7 @@ void VisualScriptEditor::_selected_connect_node(const String &p_text,
 
 	Ref<VisualScriptNode> vnode;
 	Ref<VisualScriptNode> vnode_old;
-	bool port_node_exists = script->has_node(port_action_node);
+	bool port_node_exists = true;
 	if (port_node_exists && p_connecting) {
 		vnode_old = script->get_node(port_action_node);
 	}

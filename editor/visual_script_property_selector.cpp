@@ -660,55 +660,59 @@ bool VisualScriptPropertySelector::SearchRunner::_phase_init() {
 }
 
 bool VisualScriptPropertySelector::SearchRunner::_phase_match_classes_init() {
-	combined_docs = EditorHelp::get_doc_data()->class_list;
-	matches.clear();
-	matched_item = nullptr;
-	match_highest_score = 0;
+    combined_docs = EditorHelp::get_doc_data()->class_list;
+    matches.clear();
+    matched_item = nullptr;
+    match_highest_score = 0;
 
-	if (
-			(selector_ui->base_script.unquote() != "") &&
-			(selector_ui->base_script.unquote() != ".") &&
-			!combined_docs.has(selector_ui->base_script)) {
-		String file_path = "res://" + selector_ui->base_script.unquote(); // EditorHelp::get_doc_data().name to filepath
-		Ref<Script> script;
-		script = ResourceLoader::load(file_path);
-		if (!script.is_null()) {
-			DocData::ClassDoc class_doc = DocData::ClassDoc();
+    String baseScript = selector_ui->base_script.unquote();
 
-			class_doc.name = selector_ui->base_script;
+    if (baseScript.length() == 0 || baseScript == "." || combined_docs.has(baseScript)) {
+        iterator_doc = combined_docs.begin();
+        return true;
+    }
 
-			class_doc.inherits = script->get_instance_base_type();
-			class_doc.brief_description = ".vs files not supported by EditorHelp::get_doc_data()";
-			class_doc.description = "";
+    String file_path = "res://" + baseScript;
+    Ref<Script> script = ResourceLoader::load(file_path);
 
-			Object *obj = ObjectDB::get_instance(script->get_instance_id());
-			if (Object::cast_to<Script>(obj)) {
-				List<MethodInfo> methods;
-				Object::cast_to<Script>(obj)->get_script_method_list(&methods);
-				for (List<MethodInfo>::Element *M = methods.front(); M; M = M->next()) {
-					class_doc.methods.push_back(_get_method_doc(M->get()));
-				}
+    if (script.is_null()) {
+        iterator_doc = combined_docs.begin();
+        return true;
+    }
 
-				List<MethodInfo> signals;
-				Object::cast_to<Script>(obj)->get_script_signal_list(&signals);
-				for (List<MethodInfo>::Element *S = signals.front(); S; S = S->next()) {
-					class_doc.signals.push_back(_get_method_doc(S->get()));
-				}
+    DocData::ClassDoc class_doc;
+    class_doc.name = baseScript;
+    class_doc.inherits = script->get_instance_base_type();
+    class_doc.brief_description = ".vs files not supported by EditorHelp::get_doc_data()";
+    class_doc.description = "";
 
-				List<PropertyInfo> properties;
-				Object::cast_to<Script>(obj)->get_script_property_list(&properties);
-				for (List<PropertyInfo>::Element *P = properties.front(); P; P = P->next()) {
-					DocData::PropertyDoc pd = DocData::PropertyDoc();
-					pd.name = P->get().name;
-					pd.type = Variant::get_type_name(P->get().type);
-					class_doc.properties.push_back(pd);
-				}
-			}
-			combined_docs.insert(class_doc.name, class_doc);
-		}
-	}
-	iterator_doc = combined_docs.begin();
-	return true;
+    Object* obj = ObjectDB::get_instance(script->get_instance_id());
+    if (Object::cast_to<Script>(obj)) {
+        List<MethodInfo> methods;
+        Object::cast_to<Script>(obj)->get_script_method_list(&methods);
+        for (List<MethodInfo>::Element* M = methods.front(); M; M = M->next()) {
+            class_doc.methods.push_back(_get_method_doc(M->get()));
+        }
+
+        List<MethodInfo> signals;
+        Object::cast_to<Script>(obj)->get_script_signal_list(&signals);
+        for (List<MethodInfo>::Element* S = signals.front(); S; S = S->next()) {
+            class_doc.signals.push_back(_get_method_doc(S->get()));
+        }
+
+        List<PropertyInfo> properties;
+        Object::cast_to<Script>(obj)->get_script_property_list(&properties);
+        for (List<PropertyInfo>::Element* P = properties.front(); P; P = P->next()) {
+            DocData::PropertyDoc pd;
+            pd.name = P->get().name;
+            pd.type = Variant::get_type_name(P->get().type);
+            class_doc.properties.push_back(pd);
+        }
+    }
+
+    combined_docs.insert(class_doc.name, class_doc);
+    iterator_doc = combined_docs.begin();
+    return true;
 }
 
 bool VisualScriptPropertySelector::SearchRunner::_phase_node_classes_init() {
@@ -768,128 +772,129 @@ bool VisualScriptPropertySelector::SearchRunner::_phase_node_classes_build() {
 }
 
 bool VisualScriptPropertySelector::SearchRunner::_phase_match_classes() {
-	DocData::ClassDoc &class_doc = iterator_doc->value;
-	if (
-			(!_is_class_disabled_by_feature_profile(class_doc.name) && !_is_class_disabled_by_scope(class_doc.name)) ||
-			_match_visual_script(class_doc)) {
-		if (class_doc.inherits == "VisualScriptCustomNode") {
-			class_doc.script_path = "res://" + class_doc.name.unquote();
-			Ref<Script> script = ResourceLoader::load(class_doc.script_path);
-			Ref<VisualScriptCustomNode> vsn;
-			vsn.instantiate();
-			vsn->set_script(script);
-			class_doc.name = vsn->get_caption();
-			if (combined_docs.has(vsn->get_category())) {
-				class_doc.inherits = vsn->get_category();
-			} else if (combined_docs.has("VisualScriptNode/" + vsn->get_category())) {
-				class_doc.inherits = "VisualScriptNode/" + vsn->get_category();
-			} else if (combined_docs.has("VisualScriptCustomNode/" + vsn->get_category())) {
-				class_doc.inherits = "VisualScriptCustomNode/" + vsn->get_category();
-			} else {
-				class_doc.inherits = "";
-			}
-			class_doc.brief_description = "";
-			class_doc.constructors.clear();
-			class_doc.methods.clear();
-			class_doc.operators.clear();
-			class_doc.signals.clear();
-			class_doc.constants.clear();
-			class_doc.enums.clear();
-			class_doc.properties.clear();
-			class_doc.theme_properties.clear();
-		}
+   DocData::ClassDoc &class_doc = iterator_doc->value;
+   const bool isVisualScript = _match_visual_script(class_doc);
+   const bool isClassEnabled = !_is_class_disabled_by_feature_profile(class_doc.name) && !_is_class_disabled_by_scope(class_doc.name);
 
-		matches[class_doc.name] = ClassMatch();
-		ClassMatch &match = matches[class_doc.name];
+   if (isClassEnabled || isVisualScript) {
+       if (class_doc.inherits == "VisualScriptCustomNode") {
+           class_doc.script_path = "res://" + class_doc.name.unquote();
+           Ref<Script> script = ResourceLoader::load(class_doc.script_path);
+           Ref<VisualScriptCustomNode> vsn;
+           vsn.instantiate();
+           vsn->set_script(script);
+           class_doc.name = vsn->get_caption();
 
-		match.doc = &class_doc;
-		// Match class name.
-		if (search_flags & SEARCH_CLASSES || _match_visual_script(class_doc)) {
-			if (term == "") {
-				match.name = !_match_is_hidden(class_doc);
-			} else {
-				match.name = _match_string(term, class_doc.name);
-			}
-			//	match.name = term == "" || _match_string(term, class_doc.name);
-		}
+           const String category = vsn->get_category();
+           if (combined_docs.has(category)) {
+               class_doc.inherits = category;
+           } else {
+               const String customNodeCategory = "VisualScriptCustomNode/" + category;
+               class_doc.inherits = combined_docs.has(customNodeCategory) ? customNodeCategory : "";
+           }
 
-		// Match members if the term is long enough.
-		if (term.length() >= 0) {
-			if (search_flags & SEARCH_CONSTRUCTORS) {
-				for (int i = 0; i < class_doc.constructors.size(); i++) {
-					String method_name = (search_flags & SEARCH_CASE_SENSITIVE) ? class_doc.constructors[i].name : class_doc.constructors[i].name.to_lower();
-					if (method_name.find(term) > -1 ||
-							term == " " ||
-							(term.begins_with(".") && method_name.begins_with(term.substr(1))) ||
-							(term.ends_with("(") && method_name.ends_with(term.left(term.length() - 1).strip_edges())) ||
-							(term.begins_with(".") && term.ends_with("(") && method_name == term.substr(1, term.length() - 2).strip_edges())) {
-						match.constructors.push_back(const_cast<DocData::MethodDoc *>(&class_doc.constructors[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_METHODS) {
-				for (int i = 0; i < class_doc.methods.size(); i++) {
-					String method_name = (search_flags & SEARCH_CASE_SENSITIVE) ? class_doc.methods[i].name : class_doc.methods[i].name.to_lower();
-					if (method_name.find(term) > -1 ||
-							term == " " ||
-							(term.begins_with(".") && method_name.begins_with(term.substr(1))) ||
-							(term.ends_with("(") && method_name.ends_with(term.left(term.length() - 1).strip_edges())) ||
-							(term.begins_with(".") && term.ends_with("(") && method_name == term.substr(1, term.length() - 2).strip_edges())) {
-						match.methods.push_back(const_cast<DocData::MethodDoc *>(&class_doc.methods[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_OPERATORS) {
-				for (int i = 0; i < class_doc.operators.size(); i++) {
-					String method_name = (search_flags & SEARCH_CASE_SENSITIVE) ? class_doc.operators[i].name : class_doc.operators[i].name.to_lower();
-					if (method_name.find(term) > -1 ||
-							term == " " ||
-							(term.begins_with(".") && method_name.begins_with(term.substr(1))) ||
-							(term.ends_with("(") && method_name.ends_with(term.left(term.length() - 1).strip_edges())) ||
-							(term.begins_with(".") && term.ends_with("(") && method_name == term.substr(1, term.length() - 2).strip_edges())) {
-						match.operators.push_back(const_cast<DocData::MethodDoc *>(&class_doc.operators[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_SIGNALS) {
-				for (int i = 0; i < class_doc.signals.size(); i++) {
-					if (_match_string(term, class_doc.signals[i].name) ||
-							term == " ") {
-						match.signals.push_back(const_cast<DocData::MethodDoc *>(&class_doc.signals[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_CONSTANTS) {
-				for (int i = 0; i < class_doc.constants.size(); i++) {
-					if (_match_string(term, class_doc.constants[i].name) ||
-							term == " ") {
-						match.constants.push_back(const_cast<DocData::ConstantDoc *>(&class_doc.constants[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_PROPERTIES) {
-				for (int i = 0; i < class_doc.properties.size(); i++) {
-					if (_match_string(term, class_doc.properties[i].name) ||
-							term == " " ||
-							_match_string(term, class_doc.properties[i].getter) ||
-							_match_string(term, class_doc.properties[i].setter)) {
-						match.properties.push_back(const_cast<DocData::PropertyDoc *>(&class_doc.properties[i]));
-					}
-				}
-			}
-			if (search_flags & SEARCH_THEME_ITEMS) {
-				for (int i = 0; i < class_doc.theme_properties.size(); i++) {
-					if (_match_string(term, class_doc.theme_properties[i].name) ||
-							term == " ") {
-						match.theme_properties.push_back(const_cast<DocData::ThemeItemDoc *>(&class_doc.theme_properties[i]));
-					}
-				}
-			}
-		}
-	}
+           class_doc.brief_description = "";
+           class_doc.constructors.clear();
+           class_doc.methods.clear();
+           class_doc.operators.clear();
+           class_doc.signals.clear();
+           class_doc.constants.clear();
+           class_doc.enums.clear();
+           class_doc.properties.clear();
+           class_doc.theme_properties.clear();
+       }
 
-	++iterator_doc;
-	return !iterator_doc;
+       matches[class_doc.name] = ClassMatch();
+       ClassMatch &match = matches[class_doc.name];
+       match.doc = &class_doc;
+
+       // Match class name.
+       if ((search_flags & SEARCH_CLASSES || isVisualScript) && (term.length() == 0 || _match_string(term, class_doc.name))) {
+           match.name = !_match_is_hidden(class_doc);
+       }
+
+       // Match members if the term is long enough.
+       if (term.length() >= 0) {
+           const bool searchConstructors = search_flags & SEARCH_CONSTRUCTORS;
+           const bool searchMethods = search_flags & SEARCH_METHODS;
+           const bool searchOperators = search_flags & SEARCH_OPERATORS;
+           const bool searchSignals = search_flags & SEARCH_SIGNALS;
+           const bool searchConstants = search_flags & SEARCH_CONSTANTS;
+           const bool searchProperties = search_flags & SEARCH_PROPERTIES;
+           const bool searchThemeItems = search_flags & SEARCH_THEME_ITEMS;
+
+           // Convert term to lowercase for case-insensitive search.
+           String term_lower = term.to_lower();
+
+           for (int i = 0; i < class_doc.constructors.size(); i++) {
+               const auto &constructor = class_doc.constructors[i];
+               const String method_name = constructor.name.to_lower();
+               if (method_name.find(term_lower) > -1 ||
+                   term.length() == 0 ||
+                   (term.begins_with(".") && method_name.begins_with(term_lower.substr(1))) ||
+                   (term.ends_with("(") && method_name.ends_with(term_lower.left(term_lower.length() - 1).strip_edges())) ||
+                   (term.begins_with(".") && term.ends_with("(") && method_name == term_lower.substr(1, term_lower.length() - 2).strip_edges())) {
+                   match.constructors.push_back(const_cast<DocData::MethodDoc *>(&constructor));
+               }
+           }
+
+           for (int i = 0; i < class_doc.methods.size(); i++) {
+               const auto &method = class_doc.methods[i];
+               const String method_name = method.name.to_lower();
+               if (method_name.find(term_lower) > -1 ||
+                   term.length() == 0 ||
+                   (term.begins_with(".") && method_name.begins_with(term_lower.substr(1))) ||
+                   (term.ends_with("(") && method_name.ends_with(term_lower.left(term_lower.length() - 1).strip_edges())) ||
+                   (term.begins_with(".") && term.ends_with("(") && method_name == term_lower.substr(1, term_lower.length() - 2).strip_edges())) {
+                   match.methods.push_back(const_cast<DocData::MethodDoc *>(&method));
+               }
+           }
+
+           for (int i = 0; i < class_doc.operators.size(); i++) {
+               const auto &op = class_doc.operators[i];
+               const String method_name = op.name.to_lower();
+               if (method_name.find(term_lower) > -1 ||
+                   term.length() == 0 ||
+                   (term.begins_with(".") && method_name.begins_with(term_lower.substr(1))) ||
+                   (term.ends_with("(") && method_name.ends_with(term_lower.left(term_lower.length() - 1).strip_edges())) ||
+                   (term.begins_with(".") && term.ends_with("(") && method_name == term_lower.substr(1, term_lower.length() - 2).strip_edges())) {
+                   match.operators.push_back(const_cast<DocData::MethodDoc *>(&op));
+               }
+           }
+
+           for (int i = 0; i < class_doc.signals.size(); i++) {
+               const auto &signal = class_doc.signals[i];
+               if (_match_string(term, signal.name) || term.length() == 0) {
+                   match.signals.push_back(const_cast<DocData::MethodDoc *>(&signal));
+               }
+           }
+
+           for (int i = 0; i < class_doc.constants.size(); i++) {
+               const auto &constant = class_doc.constants[i];
+               if (_match_string(term, constant.name) || term.length() == 0) {
+                   match.constants.push_back(const_cast<DocData::ConstantDoc *>(&constant));
+               }
+           }
+
+           for (int i = 0; i < class_doc.properties.size(); i++) {
+               const auto &property = class_doc.properties[i];
+               if (_match_string(term, property.name) || term.length() == 0 ||
+                   _match_string(term, property.getter) || _match_string(term, property.setter)) {
+                   match.properties.push_back(const_cast<DocData::PropertyDoc *>(&property));
+               }
+           }
+
+           for (int i = 0; i < class_doc.theme_properties.size(); i++) {
+               const auto &theme_item = class_doc.theme_properties[i];
+               if (_match_string(term, theme_item.name) || term.length() == 0) {
+                   match.theme_properties.push_back(const_cast<DocData::ThemeItemDoc *>(&theme_item));
+               }
+           }
+       }
+   }
+
+   ++iterator_doc;
+   return !iterator_doc;
 }
 
 bool VisualScriptPropertySelector::SearchRunner::_phase_class_items_init() {
@@ -935,34 +940,42 @@ bool VisualScriptPropertySelector::SearchRunner::_phase_member_items() {
 	}
 
 	ClassMatch &match = iterator_match->value;
-
 	TreeItem *parent = (search_flags & SEARCH_SHOW_HIERARCHY) ? class_items[match.doc->name] : root_item;
 	bool constructor_created = false;
-	for (int i = 0; i < match.methods.size(); i++) {
-		String text = match.methods[i]->name;
-		if (!constructor_created) {
-			if (match.doc->name == match.methods[i]->name) {
-				text += " " + TTR("(constructors)");
-				constructor_created = true;
-			}
-		} else {
-			if (match.doc->name == match.methods[i]->name) {
-				continue;
-			}
+
+	const auto &methods = match.methods;
+	const auto &signals = match.signals;
+	const auto &constants = match.constants;
+	const auto &properties = match.properties;
+	const auto &theme_properties = match.theme_properties;
+
+	for (const auto &method : methods) {
+		String text = method->name;
+		bool isConstructor = (match.doc->name == method->name);
+		if (!constructor_created && isConstructor) {
+			text += " " + TTR("(constructors)");
+			constructor_created = true;
 		}
-		_create_method_item(parent, match.doc, text, match.methods[i]);
+		if (isConstructor) {
+			continue;
+		}
+		_create_method_item(parent, match.doc, text, method);
 	}
-	for (int i = 0; i < match.signals.size(); i++) {
-		_create_signal_item(parent, match.doc, match.signals[i]);
+
+	for (const auto &signal : signals) {
+		_create_signal_item(parent, match.doc, signal);
 	}
-	for (int i = 0; i < match.constants.size(); i++) {
-		_create_constant_item(parent, match.doc, match.constants[i]);
+
+	for (const auto &constant : constants) {
+		_create_constant_item(parent, match.doc, constant);
 	}
-	for (int i = 0; i < match.properties.size(); i++) {
-		_create_property_item(parent, match.doc, match.properties[i]);
+
+	for (const auto &property : properties) {
+		_create_property_item(parent, match.doc, property);
 	}
-	for (int i = 0; i < match.theme_properties.size(); i++) {
-		_create_theme_property_item(parent, match.doc, match.theme_properties[i]);
+
+	for (const auto &theme_property : theme_properties) {
+		_create_theme_property_item(parent, match.doc, theme_property);
 	}
 
 	++iterator_match;
