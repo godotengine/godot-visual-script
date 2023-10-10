@@ -395,30 +395,6 @@ public:
 	~VisualScriptEditor();
 };
 
-// Singleton
-class VisualScriptCustomNodes : public Object {
-	GDCLASS(VisualScriptCustomNodes, Object);
-
-	friend class VisualScriptLanguage;
-
-protected:
-	static void _bind_methods();
-	static VisualScriptCustomNodes *singleton;
-
-	static HashMap<String, Ref<RefCounted>> custom_nodes;
-	static Ref<VisualScriptNode> create_node_custom(const String &p_name);
-
-public:
-	static VisualScriptCustomNodes *get_singleton() { return singleton; }
-
-	void add_custom_node(const String &p_name, const String &p_category,
-			const Ref<Script> &p_script);
-	void remove_custom_node(const String &p_name, const String &p_category);
-
-	VisualScriptCustomNodes();
-	~VisualScriptCustomNodes();
-};
-
 #endif
 
 #endif // VISUAL_SCRIPT_EDITOR_H

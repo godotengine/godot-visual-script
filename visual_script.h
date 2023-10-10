@@ -541,6 +541,7 @@ typedef Ref<VisualScriptNode> (*VisualScriptNodeRegisterFunc)(
 		const String &p_type);
 
 class VisualScriptLanguage : public ScriptLanguage {
+    static const int DEBUG_MAX_CALL_STACK = 1024;
 	HashMap<String, VisualScriptNodeRegisterFunc> register_funcs;
 
 	struct CallLevel {

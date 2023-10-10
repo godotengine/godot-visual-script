@@ -43,7 +43,6 @@ VisualScriptLanguage *visual_script_language = nullptr;
 
 #ifdef TOOLS_ENABLED
 #include "editor/visual_script_editor.h"
-static VisualScriptCustomNodes *vs_custom_nodes_singleton = nullptr;
 #endif
 
 void initialize_visual_script_module(ModuleInitializationLevel p_level) {
@@ -111,12 +110,7 @@ void initialize_visual_script_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		ClassDB::set_current_api(ClassDB::API_EDITOR);
-		GDREGISTER_CLASS(VisualScriptCustomNodes);
 		ClassDB::set_current_api(ClassDB::API_CORE);
-		vs_custom_nodes_singleton = memnew(VisualScriptCustomNodes);
-		Engine::get_singleton()->add_singleton(Engine::Singleton(
-				"VisualScriptCustomNodes", VisualScriptCustomNodes::get_singleton()));
-
 		VisualScriptEditor::register_editor();
 	}
 #endif
@@ -136,9 +130,6 @@ void uninitialize_visual_script_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		VisualScriptEditor::free_clipboard();
-		if (vs_custom_nodes_singleton) {
-			memdelete(vs_custom_nodes_singleton);
-		}
 	}
 #endif
 }

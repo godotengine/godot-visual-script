@@ -2719,18 +2719,14 @@ void VisualScriptLanguage::get_registered_node_names(List<String> *r_names) {
 VisualScriptLanguage::VisualScriptLanguage() {
 	singleton = this;
 
-	int dmcs = GLOBAL_DEF("debug/settings/visual_script/max_call_stack", 1024);
 	ProjectSettings::get_singleton()->set_custom_property_info(
-			PropertyInfo(Variant::INT, "debug/settings/visual_script/max_call_stack",
-					PROPERTY_HINT_RANGE, "1024,4096,1,or_greater"));
+		PropertyInfo(Variant::INT, "debug/settings/visual_script/max_call_stack",
+			PROPERTY_HINT_RANGE, "1024,4096,1,or_greater"));
 
 	if (EngineDebugger::is_active()) {
 		// Debugging enabled!
-		_debug_max_call_stack = dmcs;
-		_call_stack = memnew_arr(CallLevel, _debug_max_call_stack + 1);
-
+		_call_stack = memnew_arr(CallLevel, DEBUG_MAX_CALL_STACK + 1);
 	} else {
-		_debug_max_call_stack = 0;
 		_call_stack = nullptr;
 	}
 }
