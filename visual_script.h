@@ -627,6 +627,7 @@ public:
 
 	virtual String get_name() const override;
 	virtual void get_comment_delimiters(List<String> *p_delimiters) const override {}
+    virtual void get_doc_comment_delimiters(List<String> *p_delimiters) const override {}
 
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() override;
