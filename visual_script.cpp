@@ -2429,9 +2429,6 @@ bool VisualScriptLanguage::is_control_flow_keyword(String p_keyword) const {
 	return false;
 }
 
-void VisualScriptLanguage::get_comment_delimiters(
-		List<String> *p_delimiters) const {}
-
 void VisualScriptLanguage::get_string_delimiters(
 		List<String> *p_delimiters) const {}
 

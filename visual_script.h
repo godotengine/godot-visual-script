@@ -250,7 +250,8 @@ private:
 
 	HashMap<Object *, VisualScriptInstance *> instances;
 
-	bool is_tool_script;
+	bool is_tool_script = false;
+	virtual bool is_abstract() const override { return false; }
 
 #ifdef TOOLS_ENABLED
 	RBSet<PlaceHolderScriptInstance *> placeholders;
@@ -370,7 +371,7 @@ public:
 	virtual void set_source_code(const String &p_code) override;
 	virtual Error reload(bool p_keep_state = false) override;
 
-	virtual String get_class_icon_path() const;
+	virtual String get_class_icon_path() const override;
 #ifdef TOOLS_ENABLED
 	virtual Vector<DocData::ClassDoc> get_documentation() const override {
 		Vector<DocData::ClassDoc> docs;
@@ -447,10 +448,10 @@ class VisualScriptInstance : public ScriptInstance {
 	friend class VisualScriptFunctionState; // For yield.
 	friend class VisualScriptLanguage; // For debugger.
 public:
-    virtual void validate_property(PropertyInfo &p_property) const {
-    }
-    virtual void notification(int p_notification, bool p_reversed = false) {
-    }
+	virtual void validate_property(PropertyInfo &p_property) const {
+	}
+	virtual void notification(int p_notification, bool p_reversed = false) {
+	}
 	virtual bool set(const StringName &p_name, const Variant &p_value);
 	virtual bool get(const StringName &p_name, Variant &r_ret) const;
 	virtual void get_property_list(List<PropertyInfo> *p_properties) const;
@@ -528,6 +529,7 @@ protected:
 	static void _bind_methods();
 
 public:
+	virtual bool is_abstract() const { return false; }
 	void connect_to_signal(Object *p_obj, const String &p_signal, Array p_binds);
 	bool is_valid() const;
 	Variant resume(Array p_args);
@@ -624,6 +626,7 @@ public:
 	//////////////////////////////////////
 
 	virtual String get_name() const override;
+	virtual void get_comment_delimiters(List<String> *p_delimiters) const override {}
 
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() override;
@@ -634,8 +637,6 @@ public:
 	/* EDITOR FUNCTIONS */
 	virtual void get_reserved_words(List<String> *p_words) const override;
 	virtual bool is_control_flow_keyword(String p_keyword) const override;
-	virtual void
-	get_comment_delimiters(List<String> *p_delimiters) const override;
 	virtual void get_string_delimiters(List<String> *p_delimiters) const override;
 	virtual bool is_using_templates() override;
 	virtual Ref<Script>
