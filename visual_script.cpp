@@ -779,6 +779,10 @@ bool VisualScript::can_instantiate() const {
 	return true; // ScriptServer::is_scripting_enabled();
 }
 
+bool VisualScript::is_abstract() const {
+	return false;
+}
+
 StringName VisualScript::get_instance_base_type() const { return base_type; }
 
 Ref<Script> VisualScript::get_base_script() const {
