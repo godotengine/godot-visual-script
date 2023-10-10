@@ -22,8 +22,8 @@ jobs:
       # Clone Godot
       - uses: actions/checkout@v2
         with:
-          repository: v-sekai/godot
-          ref: groups-4.x
+          repository: godotengine/godot
+          ref: master
 
       # Clone our module under the correct directory
       - uses: actions/checkout@v2
