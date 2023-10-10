@@ -358,6 +358,7 @@ public:
 	void set_instance_base_type(const StringName &p_type);
 
 	virtual bool can_instantiate() const override;
+	virtual bool is_abstract() const override;
 
 	virtual Ref<Script> get_base_script() const override;
 	virtual StringName get_global_name() const override;
@@ -624,6 +625,7 @@ public:
 	//////////////////////////////////////
 
 	virtual String get_name() const override;
+	virtual void get_doc_comment_delimiters(List<String> *p_delimiters) const override {};
 
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() override;
