@@ -566,7 +566,7 @@ VisualScriptPropertySelector::VisualScriptPropertySelector() {
 	ScrollContainer *scroller = memnew(ScrollContainer);
 	scroller->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
 	scroller->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	scroller->set_custom_minimum_size(Size2(600, 400) * EDSCALE);
+	scroller->set_custom_minimum_size(Size2(480, 160) * EDSCALE);
 	vbox->add_child(scroller);
 
 	help_bit = memnew(EditorHelpBit);
@@ -880,12 +880,12 @@ if ((!_is_class_disabled_by_feature_profile(class_doc.name) &&
         match.doc = &class_doc;
 // Match class name.
         if (search_flags & SEARCH_CLASSES || _match_visual_script(class_doc)) {
-            if (term == "") {
+            if (term == " ") {
 				match.name = !_match_is_hidden(class_doc);
 			} else {
 				match.name = _match_string(term, class_doc.name);
 			}
-			//	match.name = term == "" || _match_string(term, class_doc.name);
+			//	match.name = term == " " || _match_string(term, class_doc.name);
         }
 
 // Match members if the term is long enough.
