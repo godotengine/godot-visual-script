@@ -873,6 +873,10 @@ bool VisualScript::is_valid() const {
 	return true; // Always valid.
 }
 
+bool VisualScript::is_abstract() const {
+	return false;
+}
+
 ScriptLanguage *VisualScript::get_language() const {
 	return VisualScriptLanguage::singleton;
 }
@@ -2430,6 +2434,9 @@ bool VisualScriptLanguage::is_control_flow_keyword(String p_keyword) const {
 }
 
 void VisualScriptLanguage::get_comment_delimiters(
+		List<String> *p_delimiters) const {}
+
+void VisualScriptLanguage::get_doc_comment_delimiters(
 		List<String> *p_delimiters) const {}
 
 void VisualScriptLanguage::get_string_delimiters(
