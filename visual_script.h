@@ -381,6 +381,7 @@ public:
 
 	virtual bool is_tool() const override;
 	virtual bool is_valid() const override;
+	virtual bool is_abstract() const override;
 
 	virtual ScriptLanguage *get_language() const override;
 
@@ -638,6 +639,8 @@ public:
 	virtual bool is_control_flow_keyword(String p_keyword) const override;
 	virtual void
 	get_comment_delimiters(List<String> *p_delimiters) const override;
+	virtual void
+	get_doc_comment_delimiters(List<String> *p_delimiters) const override;
 	virtual void get_string_delimiters(List<String> *p_delimiters) const override;
 	virtual bool is_using_templates() override;
 	virtual Ref<Script>
